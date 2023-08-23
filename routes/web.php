@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.index');
+Route::get('/',[\App\Http\Controllers\PagesController::class,'login']);
+
+Auth::routes();
+
+// admin routes
+Route::group(['middleware' => ['admin'],'prefix'=>'admin'], function () {
+    Route::get('/dashboard', [\App\Http\Controllers\PagesController::class, 'dashboard'])->name('admin.dashboard');
 });
-
-
