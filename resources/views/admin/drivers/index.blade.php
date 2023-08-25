@@ -88,7 +88,7 @@
                                                     >
                                                         <i class="mdi mdi-car"></i>
                                                     </button>
-                                                    <button class="btn btn-secondary btn-sm text-white">
+                                                    <button class="btn btn-secondary btn-sm text-white" data-bs-toggle="modal" data-bs-target="#walletModal-{{$driver['id']}}">
                                                         <i class="mdi mdi-wallet"></i>
                                                     </button>
                                                     @if($driver['etat_chauffeur_id'] == 2 && $driver['etat_disponibilite'] == 1)
@@ -121,44 +121,51 @@
                                                         @method('PUT')
                                                     </form>
                                                 </td>
-                                                <!-- Add car to driver Modal -->
+                                                <!-- Add or update car for driver Modal -->
                                                 <div class="modal fade" id="carModal-{{$driver['id']}}" tabindex="-1" role="dialog" aria-labelledby="carModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="carModalLabel">
-                                                                    Ajouter un véhicule au chauffeur {{$driver['nom'].' ' .$driver['prenom']}}
+                                                                    @if (isset($driver['car']) && !empty($driver['car']['immatriculation']) && !empty($driver['car']['car_type']) && !empty($driver['car']['course_type']))
+                                                                        Modifier le véhicule de {{$driver['nom'].' ' .$driver['prenom']}}
+                                                                    @else
+                                                                        Ajouter un véhicule au chauffeur {{$driver['nom'].' ' .$driver['prenom']}}
+                                                                    @endif
                                                                 </h5>
                                                                 <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
                                                                     <span aria-hidden="true">&times;</span>
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <form action="{{route('admin.drivers.store-car', $driver['id'])}}" method="POST"
-                                                                >
+                                                                <form action="{{ isset($driver['car']) && !empty($driver['car']['immatriculation']) && !empty($driver['car']['car_type']) && !empty($driver['car']['course_type']) ? route('admin.drivers.update-car', $driver['id']) : route('admin.drivers.store-car', $driver['id']) }}" method="POST">
                                                                     @csrf
+                                                                    @if (isset($driver['car']) && !empty($driver['car']['immatriculation']) && !empty($driver['car']['car_type']) && !empty($driver['car']['course_type']))
+                                                                        @method('PUT')
+                                                                    @endif
                                                                     <div class="mb-3">
                                                                         <label for="immatriculation" class="col-form-label">Immatriculation</label>
-                                                                        <input type="text" class="form-control" id="immatriculation" name="immatriculation" placeholder="Immatriculation">
+                                                                        <input type="text" class="form-control" id="immatriculation" name="immatriculation" placeholder="Immatriculation" value="{{ $driver['car']['immatriculation'] ?? '' }}">
                                                                     </div>
                                                                     <div class="mb-3">
                                                                         <label for="car_type" class="col-form-label">Type de voiture</label>
                                                                         <select class="form-control" id="car_type" name="car_type">
                                                                             <option value="0">Sélectionner un type de voiture</option>
-                                                                            <option value="1">Economic</option>
-                                                                            <option value="2">VIP</option>
+                                                                            <option value="1" {{ isset($driver['car']['car_type']) && $driver['car']['car_type'] == 1 ? 'selected' : '' }}>Economic</option>
+                                                                            <option value="2" {{ isset($driver['car']['car_type']) && $driver['car']['car_type'] == 2 ? 'selected' : '' }}>VIP</option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="mb-3">
                                                                         <label for="course_type" class="col-form-label">Type de course</label>
                                                                         <select class="form-control" id="course_type" name="course_type">
                                                                             <option value="0">Sélectionner un type de course</option>
-                                                                            <option value="1">Normale</option>
-                                                                            <option value="2">Ouvert</option>
+                                                                            <option value="1" {{ isset($driver['car']['course_type']) && $driver['car']['course_type'] == 1 ? 'selected' : '' }}>Normale</option>
+                                                                            <option value="2" {{ isset($driver['car']['course_type']) && $driver['car']['course_type'] == 2 ? 'selected' : '' }}>Ouvert</option>
                                                                         </select>
                                                                     </div>
                                                                     <button class="btn btn-primary" type="submit">
-                                                                        <i class="mdi mdi-plus-circle me-1"></i> Ajouter
+                                                                        <i class="mdi mdi-plus-circle me-1"></i>
+                                                                        @if (isset($driver['car']) && !empty($driver['car']['immatriculation'])) Modifier @else Ajouter @endif
                                                                     </button>
                                                                 </form>
                                                             </div>
@@ -168,7 +175,49 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- End Add car to driver Modal -->
+
+                                                <!-- add or update wallet to driver modal -->
+                                                <div class="modal fade" id="walletModal-{{$driver['id']}}" tabindex="-1" role="dialog" aria-labelledby="walletModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="walletModalLabel">
+                                                                    @if ($driver['wallet']['amount'] == 0)
+                                                                        Ajouter un portefeuille au chauffeur {{$driver['nom'].' ' .$driver['prenom']}}
+                                                                    @else
+                                                                        Mettre à jour le portefeuille du chauffeur {{$driver['nom'].' ' .$driver['prenom']}}
+                                                                    @endif
+                                                                </h5>
+                                                                <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form action="@if ($driver['wallet']['amount']== 0){{ route('admin.drivers.add-wallet', $driver['id']) }}@else{{ route('admin.drivers.update-wallet', $driver['id']) }}@endif" method="POST">
+                                                                    @csrf
+                                                                    @if($driver['wallet']['amount'] != 0)
+                                                                        @method('PUT')
+                                                                    @endif
+                                                                    <div class="mb-3">
+                                                                        <label for="amount" class="col-form-label">Montant</label>
+                                                                        <input type="number" class="form-control" id="amount" name="amount" placeholder="Montant" min="0"
+                                                                               value="@if ($driver['wallet']['amount'] != 0){{$driver['wallet']['amount']}}@endif"
+                                                                        >
+                                                                    </div>
+                                                                    <button class="btn btn-primary" type="submit">
+                                                                        <i class="mdi mdi-plus-circle me-1"></i> @if ($driver['wallet']['amount'] == 0) Ajouter @else Mettre à jour @endif
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- End add wallet to driver modal -->
+
                                                 <!-- Delete Modal -->
                                                 <div class="modal fade" id="deleteModal-{{$driver['id']}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
