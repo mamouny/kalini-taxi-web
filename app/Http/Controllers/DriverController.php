@@ -7,14 +7,20 @@ use Kreait\Firebase\Exception\FirebaseException;
 
 class DriverController extends Controller
 {
+    private mixed $firebase;
+    private $driversCollection;
+
+    public function __construct()
+    {
+        $this->firebase = app('firebase.firestore');
+        $this->driversCollection = $this->firebase->database()->collection('drivers');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $firebase = app('firebase.firestore');
-        $driversCollection = $firebase->database()->collection('drivers');
-        $driverDocuments = $driversCollection->documents();
+        $driverDocuments = $this->driversCollection->documents();
 
         if ($driverDocuments->isEmpty()) {
             return view("admin.drivers.index", ['drivers' => collect()]);
@@ -79,9 +85,7 @@ class DriverController extends Controller
 
             $newDriverData['user_id'] = $auth->uid;
 
-            $firebase = app('firebase.firestore');
-            $driversCollection = $firebase->database()->collection('drivers');
-            $driversCollection->add($newDriverData);
+            $this->driversCollection->add($newDriverData);
 
             return redirect()->route('admin.drivers')->with('success', 'Driver created successfully');
         } catch (FirebaseException $e) {
@@ -94,9 +98,7 @@ class DriverController extends Controller
      */
     public function show(string $id)
     {
-        $firebase = app('firebase.firestore');
-        $driversCollection = $firebase->database()->collection('drivers');
-        $driverDocument = $driversCollection->document($id)->snapshot();
+        $driverDocument = $this->driversCollection->document($id)->snapshot();
 
         if (!$driverDocument->exists()) {
             return redirect()->route('admin.drivers')->with('error', 'Driver not found');
@@ -109,9 +111,7 @@ class DriverController extends Controller
 
     public function changeDriverState(string $id)
     {
-        $firebase = app('firebase.firestore');
-        $driversCollection = $firebase->database()->collection('drivers');
-        $driverDocument = $driversCollection->document($id)->snapshot();
+        $driverDocument = $this->driversCollection->document($id)->snapshot();
 
         if (!$driverDocument->exists()) {
             return redirect()->route('admin.drivers')->with('error', 'Driver not found');
@@ -130,7 +130,7 @@ class DriverController extends Controller
                 ['path' => 'etat_disponibilite', 'value' => $updated_etat_disponibilite],
             ];
 
-            $driversCollection->document($id)->update($updateData);
+            $this->driversCollection->document($id)->update($updateData);
 
             return redirect()->route('admin.drivers')->with('success', 'Driver state updated successfully');
         } catch (FirebaseException $e) {
@@ -143,9 +143,7 @@ class DriverController extends Controller
      */
     public function edit(string $id)
     {
-        $firebase = app('firebase.firestore');
-        $driversCollection = $firebase->database()->collection('drivers');
-        $driverDocument = $driversCollection->document($id)->snapshot();
+        $driverDocument = $this->driversCollection->document($id)->snapshot();
 
         if (!$driverDocument->exists()) {
             return redirect()->route('admin.drivers')->with('error', 'Driver not found');
@@ -169,9 +167,7 @@ class DriverController extends Controller
             'etat_disponibilite' => 'required|integer',
         ]);
 
-        $firebase = app('firebase.firestore');
-        $driversCollection = $firebase->database()->collection('drivers');
-        $driverDocument = $driversCollection->document($id);
+        $driverDocument = $this->driversCollection->document($id);
 
         try {
             $updatedDriverData = [
@@ -195,10 +191,14 @@ class DriverController extends Controller
     // add car to driver
     public function storeCar(Request $request, string $id)
     {
+        $request->validate([
+            'car_type' => 'required|integer',
+            'course_type' => 'required|integer',
+            'immatriculation' => 'required|string',
+        ]);
+
         try {
-            $firebase = app('firebase.firestore');
-            $driversCollection = $firebase->database()->collection('drivers');
-            $driverDocument = $driversCollection->document($id)->snapshot();
+            $driverDocument = $this->driversCollection->document($id)->snapshot();
 
             if (!$driverDocument->exists()) {
                 return redirect()->route('admin.drivers')->with('error', 'Driver not found');
@@ -212,7 +212,7 @@ class DriverController extends Controller
                 'immatriculation' => $request->input('immatriculation'),
             ];
 
-            $driversCollection->document($id)->set($driverData, ['merge' => true]);
+            $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
 
             return redirect()->route('admin.drivers')->with('info', 'Voiture ajoutée avec succès');
         } catch (FirebaseException $e) {
@@ -220,14 +220,102 @@ class DriverController extends Controller
         }
     }
 
+    // update car to driver
+    public function updateCar(Request $request, string $id)
+    {
+        $request->validate([
+            'car_type' => 'required|integer',
+            'course_type' => 'required|integer',
+            'immatriculation' => 'required|string',
+        ]);
+
+        try {
+            $driverDocument = $this->driversCollection->document($id)->snapshot();
+
+            if (!$driverDocument->exists()) {
+                return redirect()->route('admin.drivers')->with('error', 'Driver not found');
+            }
+
+            $driverData = $driverDocument->data();
+
+            $driverData['car'] = [
+                'car_type' => $request->input('car_type'),
+                'course_type' => $request->input('course_type'),
+                'immatriculation' => $request->input('immatriculation'),
+            ];
+
+            $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
+
+            return redirect()->route('admin.drivers')->with('info', 'Voiture mise à jour avec succès');
+        } catch (FirebaseException $e) {
+            return back()->with('error', 'Erreur lors de la mise à jour de la voiture');
+        }
+    }
+
+    // add wallet to driver
+    public function storeWallet(Request $request, string $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            $driverDocument = $this->driversCollection->document($id)->snapshot();
+
+            if (!$driverDocument->exists()) {
+                return redirect()->route('admin.drivers')->with('error', trans('Driver not found'));
+            }
+
+            $driverData = $driverDocument->data();
+
+            $driverData['wallet'] = [
+                'amount' => $request->input('amount'),
+            ];
+
+            $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
+
+            return redirect()->route('admin.drivers')->with('success', 'Wallet ajouté avec succès');
+        } catch (FirebaseException $e) {
+            return back()->with('error', 'Erreur lors de l\'ajout du wallet');
+        }
+    }
+
+    public function updateWallet(Request $request, string $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            $driverDocument = $this->driversCollection->document($id)->snapshot();
+
+            if (!$driverDocument->exists()) {
+                return redirect()->route('admin.drivers')->with('error', trans('Driver not found'));
+            }
+
+            $driverData = $driverDocument->data();
+
+            if ($request->has('amount') && $request->input('amount') >= 0) {
+                $driverData['wallet'] = [
+                    'amount' => $request->input('amount'),
+                ];
+
+                $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
+
+                return redirect()->route('admin.drivers')->with('success', 'Portefeuille mis à jour avec succès');
+            } else {
+                return redirect()->route('admin.drivers')->with('error', 'Le montant doit être supérieur ou égal à 0');
+            }
+        } catch (FirebaseException $e) {
+            return back()->with('error', 'Erreur lors de la mise à jour du wallet');
+        }
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        $firebase = app('firebase.firestore');
-        $driversCollection = $firebase->database()->collection('drivers');
-        $driverDocument = $driversCollection->document($id);
+        $driverDocument = $this->driversCollection->document($id);
         $driverData = $driverDocument->snapshot()->data();
         $userId = $driverData['user_id'];
 

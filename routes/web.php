@@ -31,5 +31,8 @@ Route::group(['middleware' => ['admin'],'prefix'=>'admin'], function () {
     Route::delete("/drivers/{id}",[DriverController::class,'destroy'])->name('admin.drivers.destroy');
     Route::get("/drivers/{id}/show",[DriverController::class,'show'])->name('admin.drivers.show');
     Route::post("/drivers/{id}/add-car",[DriverController::class,'storeCar'])->name('admin.drivers.store-car');
+    Route::put("/drivers/{id}/update-car",[DriverController::class,'updateCar'])->name('admin.drivers.update-car');
     Route::put("/drivers/{id}/update-state",[DriverController::class,'changeDriverState'])->name('admin.drivers.update-state');
+    Route::post("/drivers/{id}/add-wallet",[DriverController::class,'storeWallet'])->name('admin.drivers.add-wallet');
+    Route::put("/drivers/{id}/update-wallet",[DriverController::class,'updateWallet'])->name('admin.drivers.update-wallet');
 });
