@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\DriverController;
+use App\Http\Controllers\PagesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,8 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.index');
+Route::get('/',[\App\Http\Controllers\PagesController::class,'login']);
+
+Auth::routes();
+
+// admin routes
+Route::group(['middleware' => ['admin'],'prefix'=>'admin'], function () {
+    Route::get('/dashboard', [PagesController::class, 'dashboard'])->name('admin.dashboard');
+    // drivers routes
+    Route::get("/drivers",[DriverController::class,'index'])->name('admin.drivers');
+    Route::get("/drivers/create",[DriverController::class,'create'])->name('admin.drivers.create');
+    Route::post("/drivers",[DriverController::class,'store'])->name('admin.drivers.store');
+    Route::get("/drivers/{id}/edit",[DriverController::class,'edit'])->name('admin.drivers.edit');
+    Route::put("/drivers/{id}",[DriverController::class,'update'])->name('admin.drivers.update');
+    Route::delete("/drivers/{id}",[DriverController::class,'destroy'])->name('admin.drivers.destroy');
+    Route::get("/drivers/{id}/show",[DriverController::class,'show'])->name('admin.drivers.show');
+    Route::post("/drivers/{id}/add-car",[DriverController::class,'storeCar'])->name('admin.drivers.store-car');
+    Route::put("/drivers/{id}/update-state",[DriverController::class,'changeDriverState'])->name('admin.drivers.update-state');
 });
-
-
