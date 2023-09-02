@@ -1,18 +1,10 @@
 <?php
 
 return [
-  'login' => 'Connexion',
+    'login' => 'Connexion',
     'register' => 'Inscription',
     'logout' => 'Déconnexion',
     'dashboard' => 'Tableau de bord',
-    'drivers' => 'Chauffeurs',
-    'create_driver' => 'Créer un chauffeur',
-    'edit_driver' => 'Modifier un chauffeur',
-    'name' => 'Nom',
-    'prenom' => 'Prénom',
-    'tel' => 'Téléphone',
-    'etat_chauffeur_id' => 'Etat du chauffeur',
-    'etat_disponibilite_id' => 'Etat de disponibilité',
     'actions' => 'Actions',
     'edit' => 'Modifier',
     'delete' => 'Supprimer',
@@ -36,4 +28,15 @@ return [
     'delete_driver_success' => 'Chauffeur supprimé avec succès',
     'delete_driver_failed' => 'Echec de la suppression du chauffeur',
     'driver_not_found' => 'Chauffeur introuvable',
+    'nom_chauffeur' => 'Nom du chauffeur',
+    'prenom_chauffeur' => 'Prénom du chauffeur',
+    'tel_chauffeur' => 'Téléphone du chauffeur',
+    'etat_chauffeur' => 'Etat du chauffeur',
+    'etat_disponibilite' => 'Etat de disponibilité',
+    'nom_client' => 'Nom du client',
+    'tel_client' => 'Téléphone du client',
+    'creer_course' => 'Créer une course',
+    'courses' => 'Courses',
+    'course' => 'Course',
+
 ];

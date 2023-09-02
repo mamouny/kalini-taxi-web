@@ -1,6 +1,10 @@
 @extends('admin.layout.admin-layout')
 @section('title','Kalini | Editer un chauffeur')
 @section('content')
+    @php
+        use App\Http\Enums\DriverStateEnum;
+        use App\Http\Enums\DriverDisponibilityEnum;
+    @endphp
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
@@ -47,9 +51,8 @@
                             <div class="mb-3">
                                 <label for="etat_chauffeur_id" class="form-label @error('etat_chauffeur_id') is-invalid @enderror">Etat du chauffeur</label>
                                 <select class="form-select" id="etat_chauffeur_id" name="etat_chauffeur_id">
-                                    <option value="">Selectionnez</option>
-                                    <option value="1" @if($driver['etat_chauffeur_id'] == 1) selected @endif>initié</option>
-                                    <option value="2" @if($driver['etat_chauffeur_id'] == 2) selected @endif>Validé</option>
+                                    <option value="1" @if($driver['etat_chauffeur_id'] == DriverStateEnum::INITIAL->value) selected @endif>initié</option>
+                                    <option value="2" @if($driver['etat_chauffeur_id'] == DriverStateEnum::VALIDATED->value) selected @endif>Vérifié</option>
                                 </select>
                                 @error('etat_chauffeur_id')
                                 <div class="invalid-feedback">
@@ -61,8 +64,8 @@
                                 <label for="etat_disponibilite" class="form-label @error('etat_disponibilite') is-invalid @enderror">Etat de disponibilité</label>
                                 <select class="form-select" id="etat_disponibilite" name="etat_disponibilite">
                                     <option value="">Selectionnez</option>
-                                    <option value="1" @if($driver['etat_disponibilite'] == 1) selected @endif>Oui</option>
-                                    <option value="2" @if($driver['etat_disponibilite'] == 2) selected @endif>Non</option>
+                                    <option value="1" @if($driver['etat_disponibilite'] == DriverDisponibilityEnum::AVAILABLE->value) selected @endif>Oui</option>
+                                    <option value="0" @if($driver['etat_disponibilite'] == DriverDisponibilityEnum::UNAVAILABLE->value) selected @endif>Non</option>
                                 </select>
                                 @error('etat_disponibilite')
                                 <div class="invalid-feedback">

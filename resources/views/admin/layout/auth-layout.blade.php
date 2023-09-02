@@ -34,6 +34,16 @@
         const year = date.getFullYear();
         $('#date').html(year);
     });
+
+    window.onload = function () {
+        if (typeof history.pushState === "function") {
+            history.pushState("no-back", null, null);
+            window.onpopstate = function () {
+                history.pushState("no-back", null, null);
+            };
+        }
+    };
+
 </script>
 </body>
 </html>

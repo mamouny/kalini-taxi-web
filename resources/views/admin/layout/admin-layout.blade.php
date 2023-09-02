@@ -24,6 +24,14 @@
     <link href="{{asset('assets/css/vendor/buttons.bootstrap5.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset('assets/css/vendor/select.bootstrap5.css')}}" rel="stylesheet" type="text/css">
     <!-- third party css end -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <style>
+        .modal-backdrop{
+            z-index: 10;
+        }
+    </style>
 </head>
 
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
@@ -92,7 +100,6 @@
                 <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
                 <label class="form-check-label" for="boxed-check">Boxed</label>
             </div>
-
 
             <!-- Left Sidebar-->
             <h5 class="mt-4">Left Sidebar</h5>
@@ -168,6 +175,6 @@
 <!-- demo app -->
 <script src="{{asset('assets/js/pages/demo.datatable-init.js')}}"></script>
 <!-- end demo js-->
-{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>--}}
+@yield('scripts')
 </body>
 </html>

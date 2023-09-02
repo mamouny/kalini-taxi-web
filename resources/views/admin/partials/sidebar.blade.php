@@ -40,10 +40,17 @@
                 </div>
             </li>
 
-            <li>
+            <li class="side-nav-item">
                 <a href="{{route('admin.drivers')}}" class="side-nav-link text-white">
                     <i class="mdi mdi-account-multiple"></i>
                     <span>Chauffeurs</span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="{{route('admin.courses')}}" class="side-nav-link text-white">
+                    <i class="mdi mdi-car"></i>
+                    <span>Courses</span>
                 </a>
             </li>
         </ul>

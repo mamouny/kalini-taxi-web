@@ -80,8 +80,7 @@
                             <div class="mb-3">
                                 <label for="etat_chauffeur_id" class="form-label @error('etat_chauffeur_id') is-invalid @enderror">Etat du chauffeur</label>
                                 <select class="form-select" id="etat_chauffeur_id" name="etat_chauffeur_id">
-                                    <option value="">Selectionnez</option>
-                                    <option value="1">initié</option>
+                                    <option value="1" selected>initié</option>
                                     <option value="2">Validé</option>
                                 </select>
                                 @error('etat_chauffeur_id')
@@ -93,9 +92,8 @@
                             <div class="mb-3">
                                 <label for="etat_disponibilite" class="form-label @error('etat_disponibilite') is-invalid @enderror">Etat de disponibilité</label>
                                 <select class="form-select" id="etat_disponibilite" name="etat_disponibilite">
-                                    <option value="">Selectionnez</option>
                                     <option value="1">Oui</option>
-                                    <option value="2">Non</option>
+                                    <option value="0" selected>Non</option>
                                 </select>
                                 @error('etat_disponibilite')
                                     <div class="invalid-feedback">

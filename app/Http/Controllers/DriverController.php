@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\DriverDisponibilityEnum;
+use App\Http\Enums\DriverStateEnum;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Exception\FirebaseException;
 
@@ -55,7 +58,7 @@ class DriverController extends Controller
             'tel' => 'required|digits:8',
             'etat_chauffeur_id' => 'required|integer',
             'etat_disponibilite' => 'required|integer',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|digits:4|confirmed',
         ]);
 
         try {
@@ -63,8 +66,8 @@ class DriverController extends Controller
                 'nom' => $request->input('nom'),
                 'prenom' => $request->input('prenom'),
                 'tel' => $request->input('tel'),
-                'etat_chauffeur_id' => $request->input('etat_chauffeur_id'),
-                'etat_disponibilite' => $request->input('etat_disponibilite'),
+                'etat_chauffeur_id' => (int)$request->input('etat_chauffeur_id'),
+                'etat_disponibilite' => (int)$request->input('etat_disponibilite'),
                 'lng' => null,
                 'lat' => null,
                 'car' => [
@@ -75,15 +78,18 @@ class DriverController extends Controller
                 'wallet' => [
                     'amount' => 0,
                 ],
+                'course_id' => null,
+                'tokens' => [],
             ];
 
             // create user in firebase auth
             $auth = app('firebase.auth')->createUserWithEmailAndPassword(
                 $request->input('tel') . '@kalini-ride.com',
-                $request->input('password')
+                $request->input('password'). '00'
             );
 
             $newDriverData['user_id'] = $auth->uid;
+            $newDriverData['password'] = $request->input('password'). '00';
 
             $this->driversCollection->add($newDriverData);
 
@@ -121,8 +127,8 @@ class DriverController extends Controller
         $etat_chauffeur_id = $driverData['etat_chauffeur_id'];
         $etat_disponibilite = $driverData['etat_disponibilite'];
 
-        $updated_etat_chauffeur_id = $etat_chauffeur_id == 1 ? 2 : 1;
-        $updated_etat_disponibilite = $etat_disponibilite == 1 ? 2 : 1;
+        $updated_etat_chauffeur_id = $etat_chauffeur_id == DriverStateEnum::INITIAL ? DriverStateEnum::VALIDATED : DriverStateEnum::INITIAL;
+        $updated_etat_disponibilite = $etat_disponibilite == DriverDisponibilityEnum::AVAILABLE ? DriverDisponibilityEnum::UNAVAILABLE : DriverDisponibilityEnum::AVAILABLE;
 
         try {
             $updateData = [
@@ -174,8 +180,8 @@ class DriverController extends Controller
                 'nom' => $request->input('nom'),
                 'prenom' => $request->input('prenom'),
                 'tel' => $request->input('tel'),
-                'etat_chauffeur_id' => $request->input('etat_chauffeur_id'),
-                'etat_disponibilite' => $request->input('etat_disponibilite'),
+                'etat_chauffeur_id' => (int)$request->input('etat_chauffeur_id'),
+                'etat_disponibilite' => (int)$request->input('etat_disponibilite'),
                 'lng' => null,
                 'lat' => null,
             ];
@@ -192,8 +198,8 @@ class DriverController extends Controller
     public function storeCar(Request $request, string $id)
     {
         $request->validate([
-            'car_type' => 'required|integer',
-            'course_type' => 'required|integer',
+            'type_car' => 'required|integer',
+            'type_course' => 'required|integer',
             'immatriculation' => 'required|string',
         ]);
 
@@ -207,14 +213,16 @@ class DriverController extends Controller
             $driverData = $driverDocument->data();
 
             $driverData['car'] = [
-                'car_type' => $request->input('car_type'),
-                'course_type' => $request->input('course_type'),
+                'type_car' => (int)$request->input('type_car'),
+                'type_course' => (int)$request->input('type_course'),
                 'immatriculation' => $request->input('immatriculation'),
             ];
 
+            $driverData['etat_chauffeur_id'] = DriverStateEnum::VALIDATED->value;
+
             $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
 
-            return redirect()->route('admin.drivers')->with('info', 'Voiture ajoutée avec succès');
+            return redirect()->route('admin.drivers')->with('success', 'Voiture ajoutée avec succès');
         } catch (FirebaseException $e) {
             return back()->with('error', 'Erreur lors de l\'ajout de la voiture');
         }
@@ -224,8 +232,8 @@ class DriverController extends Controller
     public function updateCar(Request $request, string $id)
     {
         $request->validate([
-            'car_type' => 'required|integer',
-            'course_type' => 'required|integer',
+            'type_car' => 'required|integer',
+            'type_course' => 'required|integer',
             'immatriculation' => 'required|string',
         ]);
 
@@ -239,14 +247,14 @@ class DriverController extends Controller
             $driverData = $driverDocument->data();
 
             $driverData['car'] = [
-                'car_type' => $request->input('car_type'),
-                'course_type' => $request->input('course_type'),
+                'type_car' => $request->input('type_car'),
+                'type_course' => $request->input('type_course'),
                 'immatriculation' => $request->input('immatriculation'),
             ];
 
             $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
 
-            return redirect()->route('admin.drivers')->with('info', 'Voiture mise à jour avec succès');
+            return redirect()->route('admin.drivers')->with('success', 'Voiture mise à jour avec succès');
         } catch (FirebaseException $e) {
             return back()->with('error', 'Erreur lors de la mise à jour de la voiture');
         }
@@ -270,7 +278,11 @@ class DriverController extends Controller
 
             $driverData['wallet'] = [
                 'amount' => $request->input('amount'),
+                'date_debut' => Carbon::now()->format('Y-m-d H:i:s'),
+                'date_fin' => Carbon::now()->addDays(30)->format('Y-m-d H:i:s'),
             ];
+
+            $driverData['etat_chauffeur_id'] = DriverStateEnum::VALIDATED_ON_RIDE->value;
 
             $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
 
@@ -280,36 +292,36 @@ class DriverController extends Controller
         }
     }
 
-    public function updateWallet(Request $request, string $id)
-    {
-        $request->validate([
-            'amount' => 'required|numeric|min:0',
-        ]);
-
-        try {
-            $driverDocument = $this->driversCollection->document($id)->snapshot();
-
-            if (!$driverDocument->exists()) {
-                return redirect()->route('admin.drivers')->with('error', trans('Driver not found'));
-            }
-
-            $driverData = $driverDocument->data();
-
-            if ($request->has('amount') && $request->input('amount') >= 0) {
-                $driverData['wallet'] = [
-                    'amount' => $request->input('amount'),
-                ];
-
-                $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
-
-                return redirect()->route('admin.drivers')->with('success', 'Portefeuille mis à jour avec succès');
-            } else {
-                return redirect()->route('admin.drivers')->with('error', 'Le montant doit être supérieur ou égal à 0');
-            }
-        } catch (FirebaseException $e) {
-            return back()->with('error', 'Erreur lors de la mise à jour du wallet');
-        }
-    }
+//    public function updateWallet(Request $request, string $id)
+//    {
+//        $request->validate([
+//            'amount' => 'required|numeric|min:0',
+//        ]);
+//
+//        try {
+//            $driverDocument = $this->driversCollection->document($id)->snapshot();
+//
+//            if (!$driverDocument->exists()) {
+//                return redirect()->route('admin.drivers')->with('error', trans('Driver not found'));
+//            }
+//
+//            $driverData = $driverDocument->data();
+//
+//            if ($request->has('amount') && $request->input('amount') >= 0) {
+//                $driverData['wallet'] = [
+//                    'amount' => $request->input('amount'),
+//                ];
+//
+//                $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
+//
+//                return redirect()->route('admin.drivers')->with('success', 'Portefeuille mis à jour avec succès');
+//            } else {
+//                return redirect()->route('admin.drivers')->with('error', 'Le montant doit être supérieur ou égal à 0');
+//            }
+//        } catch (FirebaseException $e) {
+//            return back()->with('error', 'Erreur lors de la mise à jour du wallet');
+//        }
+//    }
     /**
      * Remove the specified resource from storage.
      */
