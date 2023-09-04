@@ -92,6 +92,7 @@ class CourseController extends Controller
             'date_end' => null,
             'driver' => null,
             'driver_id' => $driverId,
+            'client_id' => $client[0]->id(),
             'emplacements' => [
                 'firstPlace' => [
                     'coordinates' => [

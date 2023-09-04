@@ -30,7 +30,28 @@
                         </a>
                     </div>
                     <div class="card-body">
-                        <form action="{{route('admin.drivers.store')}}" method="POST">
+                        @if(Session::has('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="mdi mdi-check-all mr-2"></i>{{Session::get('success')}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @elseif(Session::has('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="mdi mdi-block-helper mr-2"></i>{{Session::get('error')}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @elseif(Session::has('warning'))
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <i class="mdi mdi-alert-outline mr-2"></i>{{Session::get('warning')}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @elseif(Session::has('info'))
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <i class="mdi mdi-alert-circle mr-2"></i>{{Session::get('info')}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+                        <form action="{{route('admin.drivers.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="nom" class="mb-1">Nom</label>
@@ -98,6 +119,15 @@
                                 @error('etat_disponibilite')
                                     <div class="invalid-feedback">
                                         {{$errors->first('etat_disponibilite')}}
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="permis_conduire" class="mb-1">Permis de conduire</label>
+                                <input type="file" class="form-control @error('permis_conduire') is-invalid @enderror" id="permis_conduire" name="permis_conduire">
+                                @error('permis_conduire')
+                                    <div class="invalid-feedback">
+                                        {{$errors->first('permis_conduire')}}
                                     </div>
                                 @enderror
                             </div>

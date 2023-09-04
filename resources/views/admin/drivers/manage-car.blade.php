@@ -14,7 +14,19 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ isset($driver['car']) && !empty($driver['car']['immatriculation']) && !empty($driver['car']['type_car']) && !empty($driver['car']['type_course']) ? route('admin.drivers.update-car', $driver['id']) : route('admin.drivers.store-car', $driver['id']) }}" method="POST">
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <ul class="mb-0 ps-3">
+                            @foreach ($errors->all() as $error)
+                                <li class="py-1">{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                <form action="{{ isset($driver['car']) && !empty($driver['car']['immatriculation']) && !empty($driver['car']['type_car']) && !empty($driver['car']['type_course']) ? route('admin.drivers.update-car', $driver['id']) : route('admin.drivers.store-car', $driver['id']) }}" method="POST"
+                    enctype="multipart/form-data"
+                >
                     @csrf
                     @if (isset($driver['car']) && !empty($driver['car']['immatriculation']) && !empty($driver['car']['type_car']) && !empty($driver['car']['type_course']))
                         @method('PUT')
@@ -39,6 +51,18 @@
                             <option value="2" {{ isset($driver['car']['type_car']) && $driver['car']['type_car'] == 2 ? 'selected' : '' }}>Petite voiture</option>
                         </select>
                     </div>
+                    <div class="mb-3">
+                        <label for="assurance" class="mb-2">Assurance</label>
+                        <input type="file" name="assurance" class="form-control" id="assurance">
+                    </div>
+                    <div class="mb-3">
+                        <label for="vignette" class="mb-2">Vignette</label>
+                        <input type="file" name="vignette" class="form-control" id="vignette">
+                    </div>
+                    <div class="mb-3">
+                        <label for="carte_grise" class="mb-2">Carte grise</label>
+                        <input type="file" name="carte_grise" class="form-control" id="carte_grise">
+                    </div>
                     <button class="btn btn-primary" type="submit">
                         <i class="mdi mdi-plus-circle me-1"></i>
                         @if (isset($driver['car']) && !empty($driver['car']['immatriculation'])) Modifier @else Ajouter @endif
@@ -51,3 +75,4 @@
         </div>
     </div>
 </div>
+

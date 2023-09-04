@@ -72,6 +72,12 @@
                                                 <td>
                                                     <a href="{{route('admin.drivers.edit', $driver['id'])}}" class="btn btn-primary btn-sm"><i class="mdi mdi-pencil"></i></a>
                                                     <a href="{{route('admin.drivers.show', $driver['id'])}}" class="btn btn-info btn-sm"><i class="mdi mdi-eye"></i></a>
+                                                    @php
+                                                        $driverPermisPhoto = \App\Models\DriverDocument::query()->where('driver_id_firebase', $driver['user_id'])->first()->driver_permis_photo;
+                                                    @endphp
+                                                    <a href="{{asset('uploads/drivers/documents/'.$driverPermisPhoto)}}" target="_blank" class="btn btn-success btn-sm text-white">
+                                                        <i class="mdi mdi-file-document"></i>
+                                                    </a>
                                                     <button class="btn btn-warning btn-sm text-white" data-bs-toggle="modal" data-bs-target="#carModal-{{$driver['id']}}"
                                                     >
                                                         <i class="mdi mdi-car"></i>
@@ -79,12 +85,6 @@
                                                     <button class="btn btn-secondary btn-sm text-white" data-bs-toggle="modal" data-bs-target="#walletModal-{{$driver['id']}}">
                                                         <i class="mdi mdi-wallet"></i>
                                                     </button>
-{{--                                                    @if(isset($driver['car']) && !empty($driver['car']['immatriculation']))--}}
-{{--                                                        <button class="btn btn-success btn-sm text-white" data-bs-toggle="modal" data-bs-target="#update-state-{{$driver['id']}}">--}}
-{{--                                                            <i class="mdi mdi-check"></i>--}}
-{{--                                                        </button>--}}
-{{--                                                        --}}
-{{--                                                    @endif--}}
                                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal-{{$driver['id']}}">
                                                         <i class="mdi mdi-delete"></i>
                                                     </button>
