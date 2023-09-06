@@ -28,7 +28,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4>Chauffeurs</h4>
-                        <a href="{{route('admin.drivers.create')}}" class="btn btn-primary">
+                        <a href="{{route('admin.drivers.create')}}" class="btn btn-warning text-white">
                             <i class="mdi mdi-plus-circle me-1"></i> Ajouter un chauffeur
                         </a>
                     </div>
@@ -71,7 +71,10 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{route('admin.drivers.edit', $driver['id'])}}" class="btn btn-primary btn-sm"><i class="mdi mdi-pencil"></i></a>
-                                                    <a href="{{route('admin.drivers.show', $driver['id'])}}" class="btn btn-info btn-sm"><i class="mdi mdi-eye"></i></a>
+                                                    <button class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showModal-{{$driver['id']}}"
+                                                    >
+                                                        <i class="mdi mdi-eye"></i>
+                                                    </button>
                                                     @php
                                                         $driverPermisPhoto = \App\Models\DriverDocument::query()->where('driver_id_firebase', $driver['user_id'])->first()->driver_permis_photo;
                                                     @endphp
@@ -109,6 +112,10 @@
                                                 <!-- Delete Modal -->
                                                 @include( 'admin.drivers.delete-modal')
                                                 <!-- End Delete Modal -->
+
+                                                <!-- show Modal -->
+                                                @include( 'admin.drivers.show-modal')
+                                                <!-- End show Modal -->
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -124,3 +131,4 @@
         <!-- end row-->
     </div>
 @endsection
+

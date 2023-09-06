@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GPBMetadata\Google\Api\Auth;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Exception\FirebaseException;
 
 class CourseController extends Controller
 {
@@ -24,25 +25,16 @@ class CourseController extends Controller
     {
         $coursesDocuments = $this->coursesCollection->documents();
 
-        if ($coursesDocuments->isEmpty()) {
-            return view("admin.courses.index", ['courses' => collect()]);
-        }
-
         $courses = collect($coursesDocuments->rows())->map(function ($document) {
             $data = $document->data();
             $data['id'] = $document->id();
+            $driver = $this->firebase->database()->collection('drivers')->document($data['driver_id'])->snapshot()->data();
+            $data['driver'] = $driver;
+
             return $data;
         });
 
         return view('admin.courses.index',compact('courses'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -57,115 +49,127 @@ class CourseController extends Controller
             'type_trajet' => 'required|integer',
             'lieu_depart' => 'required|string',
             'destination' => 'required|string',
+            'driver_id' => 'required|string',
         ]);
 
-        $driver = $this->firebase->database()->collection('drivers')
-            ->where('car.type_course', '=', $request->type_course_id)
-            ->where('tel', '=', $request->driver_tel)->documents()->rows();
-        $driverId = $driver[0]->id();
+        try {
+            $driverId = $this->firebase->database()->collection('drivers')->document($request->driver_id)->snapshot()->id();
 
-        $client = $this->firebase->database()->collection('clients')->where('tel', '=', $request->tel_client)->documents()->rows();
+            $clientQuery = $this->firebase->database()->collection('clients')->where('tel', '=', $request->tel_client);
+            $clientDocument = $clientQuery->documents()->rows();
 
+            if (!empty($clientDocument)) {
+                $client = $clientDocument[0];
+            } else {
+                $client = null;
+            }
 
-        if (empty($client[0]->data())) {
-            $client = $this->firebase->database()->collection('clients')->add([
-                'nom' => $request->nom_client,
-                'tel' => $request->tel_client,
-                'course_id' => null,
-                'user_id' => null,
-                'wallet' => [
-                    'amount' => 0,
-                ]
+            if (!$client) {
+                $client = $this->firebase->database()->collection('clients')->add([
+                    'nom' => $request->nom_client,
+                    'tel' => $request->tel_client,
+                    'course_id' => null,
+                    'user_id' => null,
+                    'wallet' => [
+                        'amount' => 0,
+                    ]
+                ]);
+            }
+
+            $course = $this->firebase->database()->collection('courses')->add([
+                'client' => [
+                    'nom' => $client->data()['nom'],
+                    'tel' => $client->data()['tel'],
+                    'user_id' => "admin-".auth()->user()->id,
+                    'wallet' => [
+                        'amount' => $client->data()['wallet']['amount'],
+                    ]
+                ],
+                'date_debut' => date('Y-m-d H:i:s'),
+                'date_end' => null,
+                'driver' => null,
+                'driver_id' => $driverId,
+                'client_id' => $client->id(),
+                'emplacements' => [
+                    'firstPlace' => [
+                        'coordinates' => [
+                            'latitude' => $request->latitudeLieuDepart,
+                            'latitudeDelta' => null,
+                            'longitude' => $request->longitudeLieuDepart,
+                            'longitudeDelta' => null,
+                        ],
+                        'description' => $request->lieu_depart,
+                        'place_id' => "",
+                    ],
+                    'secondPlace' => [
+                        'coordinates' => [
+                            'latitude' => $request->latitudeDestination,
+                            'latitudeDelta' => null,
+                            'longitude' => $request->longitudeDestination,
+                            'longitudeDelta' => null,
+                        ],
+                        'description' => $request->destination,
+                        'place_id' => "",
+                    ]
+                ],
+                'price' => (float)$request->price,
+                'kilometrage' => (float)$request->km,
+                'distance' => $request->distance,
+                'etat_course_id' => 1,
+                'types_course_id' => (int)$request->type_course_id,
+                'types_trajet_id' => (int)$request->type_trajet,
+                'user_id' => "admin-".auth()->user()->id,
+                'comment' => null,
+                'timeWaiting' => $request->time_waiting,
+                'raiting' => 0,
             ]);
+
+            $driver = $this->firebase->database()->collection('drivers')->document($driverId);
+
+            $clientFromDb = $this->firebase->database()->collection('clients')->document($client->id());
+
+            $clientFromDb->update([
+                ['path' => 'course_id', 'value' => $course->id()]
+            ]);
+
+            $driver->update([
+                ['path' => 'course_id', 'value' => $course->id()]
+            ]);
+        } catch(FirebaseException $e){
+            return redirect()->route("admin.courses")->with('error', 'Error while creating course.');
         }
 
-        $course = $this->firebase->database()->collection('courses')->add([
-            'client' => [
-                'nom' => $client[0]->data()['nom'],
-                'tel' => $client[0]->data()['tel'],
-                'user_id' => "admin-".auth()->user()->id,
-                'wallet' => [
-                    'amount' => $client[0]->data()['wallet']['amount'],
-                ]
-            ],
-            'date_debut' => date('Y-m-d H:i:s'),
-            'date_end' => null,
-            'driver' => null,
-            'driver_id' => $driverId,
-            'client_id' => $client[0]->id(),
-            'emplacements' => [
-                'firstPlace' => [
-                    'coordinates' => [
-                        'latitude' => $request->latitudeLieuDepart,
-                        'latitudeDelta' => null,
-                        'longitude' => $request->longitudeLieuDepart,
-                        'longitudeDelta' => null,
-                    ],
-                    'description' => $request->lieu_depart,
-                    'place_id' => "",
-                ],
-                'secondPlace' => [
-                    'coordinates' => [
-                        'latitude' => $request->latitudeDestination,
-                        'latitudeDelta' => null,
-                        'longitude' => $request->longitudeDestination,
-                        'longitudeDelta' => null,
-                    ],
-                    'description' => $request->destination,
-                    'place_id' => "",
-                ]
-            ],
-            'price' => (float)$request->price,
-            'kilometrage' => (float)$request->km,
-            'distance' => $request->distance,
-            'etat_course_id' => 1,
-            'types_course_id' => (int)$request->type_course_id,
-            'types_trajet_id' => (int)$request->type_trajet,
-            'user_id' => "admin-".auth()->user()->id,
-            'comment' => null,
-            'timeWaiting' => $request->time_waiting,
-            'raiting' => 0,
+        return redirect()->route("admin.courses")->with('success', 'Course created successfully.');
+    }
+
+    public function cancelCourse(string $id)
+    {
+        $course = $this->coursesCollection->document($id);
+
+        $course->update([
+            ['path' => 'etat_course_id', 'value' => 6],
+            ['path' => 'date_end', 'value' => date('Y-m-d H:i:s')],
         ]);
 
-        $driver = $this->firebase->database()->collection('drivers')->document($driverId);
+        $course = $course->snapshot()->data();
 
-        $driver->update([
-            ['path' => 'course_id', 'value' => $course->id()]
-        ]);
+        $this->extracted($course);
 
-        return view('admin.courses.index')->with('success', 'Course created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        return redirect()->route('admin.courses')->with('success', 'Course canceled successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $courseId)
     {
-        //
+        $course = $this->coursesCollection->document($courseId)->snapshot()->data();
+
+        $this->extracted($course);
+
+        $this->coursesCollection->document($courseId)->delete();
+
+        return redirect()->route('admin.courses')->with('success', 'Course deleted successfully');
     }
 
     /**
@@ -214,8 +218,27 @@ class CourseController extends Controller
                 'location' => $location,
                 'car' => $car
             ];
-        })->all();
+        })->where("course_id",null)->all();
 
         return response()->json(["drivers" => $drivers]);
+    }
+
+    /**
+     * @param $course
+     * @return void
+     */
+    public function extracted($course): void
+    {
+        $driver = $this->firebase->database()->collection('drivers')->document($course['driver_id']);
+
+        $driver->update([
+            ['path' => 'course_id', 'value' => null]
+        ]);
+
+        $client = $this->firebase->database()->collection('clients')->document($course['client_id']);
+
+        $client->update([
+            ['path' => 'course_id', 'value' => null]
+        ]);
     }
 }

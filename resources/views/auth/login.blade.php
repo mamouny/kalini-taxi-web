@@ -8,7 +8,7 @@
                 <div class="card">
 
                     <!-- Logo -->
-                    <div class="card-header pt-4 pb-4 text-center bg-primary">
+                    <div class="card-header pt-4 pb-4 text-center bg-warning">
                         <a href="#">
                             <span><img src="{{asset('assets/images/logo.png')}}" alt="" height="18"></span>
                         </a>
@@ -68,7 +68,7 @@
 
 
                             <div class="mb-3 mb-0 text-center">
-                                <button class="btn btn-primary w-50" type="submit"> Connexion <i class="mdi mdi-login"></i> </button>
+                                <button class="btn btn-warning text-white w-50" type="submit"> Connexion <i class="mdi mdi-login"></i> </button>
                             </div>
 
                         </form>

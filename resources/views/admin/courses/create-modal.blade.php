@@ -38,8 +38,7 @@
                         <div class="col-md-12 mb-3">
                             <label for="type_course_id" class="mb-2">Type de course</label>
                             <select class="form-control" name="type_course_id" id="type_course_id">
-                                <option>{{trans('selectionnez')}}</option>
-                                <option value="1">Economique</option>
+                                <option value="1" selected>Economique</option>
                                 <option value="2">VIP</option>
                             </select>
                         </div>

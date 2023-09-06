@@ -45,29 +45,38 @@
                                        @foreach($courses as $course)
                                         <tr>
                                             <td>{{$course['client']['nom']}}</td>
-                                            <td>{{$course['driver']}}</td>
+                                            <td>{{$course['driver']['nom'] }}</td>
                                             <td>{{$course['types_course_id'] == 1 ? "Normale" : "Ouverte"}}</td>
                                             <td>{{$course['date_debut']}}</td>
                                             <td>{{$course['price']}} mru</td>
                                             <td>
                                                 @if($course['etat_course_id'] == 1)
-                                                    <span class="badge bg-warning">En attente</span>
+                                                    <span class="badge bg-primary">Initié</span>
                                                 @elseif($course['etat_course_id'] == 2)
-                                                    <span class="badge bg-info">En cours</span>
+                                                    <span class="badge bg-info">Lancé</span>
                                                 @elseif($course['etat_course_id'] == 3)
-                                                    <span class="badge bg-success">Terminée</span>
+                                                    <span class="badge bg-warning">Chauffeur en route</span>
                                                 @elseif($course['etat_course_id'] == 4)
-                                                    <span class="badge bg-danger">Annulée</span>
+                                                    <span class="badge bg-dark">Passager au bord</span>
+                                                @elseif($course['etat_course_id'] == 5)
+                                                    <span class="badge bg-success">Terminé</span>
+                                                @elseif($course['etat_course_id'] == 6)
+                                                    <span class="badge bg-danger">Annulé</span>
                                                 @endif
                                             </td>
                                             <td class="d-flex gap-1">
-                                                <a href="#" class="btn btn-primary btn-sm">
+                                                <button class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showModal-{{$course['id']}}"
+                                                >
                                                     <i class="mdi mdi-eye"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-warning btn-sm text-white">
-                                                    <i class="mdi mdi-square-edit-outline"></i>
-                                                </a>
-                                                <form action="#" method="post">
+                                                </button>
+                                                <form action="{{route('admin.courses.cancel',$course['id'])}}" method="post">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <button type="submit" class="btn btn-warning btn-sm text-white" onclick="return confirm('Voulez-vous annuler cette course ?')">
+                                                        <i class="mdi mdi-cancel"></i>
+                                                    </button>
+                                                </form>
+                                                <form action="{{route('admin.courses.destroy',$course['id'])}}" method="post">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous supprimer cette course ?')">
@@ -87,6 +96,8 @@
 
             <!-- create course modal -->
             @include('admin.courses.create-modal')
+            <!-- show course modal -->
+            @include('admin.courses.show-modal')
         </div>
     </div>
 @endsection

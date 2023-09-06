@@ -61,7 +61,7 @@
                 <div style="max-height: 230px;" data-simplebar="">
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <div class="notify-icon bg-primary">
+                        <div class="notify-icon bg-warning">
                             <i class="mdi mdi-comment-account-outline"></i>
                         </div>
                         <p class="notify-details">Caleb Flakelar commented on Admin
@@ -91,7 +91,7 @@
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <div class="notify-icon bg-primary">
+                        <div class="notify-icon bg-warning">
                             <i class="mdi mdi-comment-account-outline"></i>
                         </div>
                         <p class="notify-details">Caleb Flakelar commented on Admin
@@ -122,7 +122,7 @@
                 </div>
 
                 <!-- All-->
-                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                <a href="javascript:void(0);" class="dropdown-item text-center text-warning notify-item notify-all">
                     View All
                 </a>
 
@@ -251,7 +251,7 @@
             <div class="input-group">
                 <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
                 <span class="mdi mdi-magnify search-icon"></span>
-                <button class="input-group-text btn-primary" type="submit">Search</button>
+                <button class="input-group-text btn-warning" type="submit">Search</button>
             </div>
         </form>
 

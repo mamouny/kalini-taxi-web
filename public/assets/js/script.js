@@ -42,6 +42,7 @@ $('#type_trajet').on('change', function () {
 });
 
 function searchPlace(input_id, pt_lat, pt_lng, calculateKm = false,place_num){
+    // if
     let pacContainerInitialized = false;
     let autocomplete;
 
@@ -67,9 +68,13 @@ function searchPlace(input_id, pt_lat, pt_lng, calculateKm = false,place_num){
         lieuDepart = [parseFloat($('#latitudeLieuDepart').val()), parseFloat($('#longitudeLieuDepart').val())];
         destination = [parseFloat($('#latitudeDestination').val()),parseFloat($('#longitudeDestination').val())];
 
-        if(place_num === 1)
+        if(place_num === 1){
             setLieuDepart(lieuDepart);
-        else{
+            setDestination(lieuDepart);
+            initMap();
+            lieuDepartMarker.addTo(map);
+            $('#map').show();
+        } else{
             setDestination(destination);
             initMap();
             lieuDepartMarker.addTo(map);
@@ -85,11 +90,17 @@ function setLieuDepart(lieuDepart)
     lieuDepartMarker.setLatLng(latLng)
 }
 
-function setDestination(destination)
-{
+function setDestination(destination) {
     const latLng = new L.LatLng(destination[0], destination[1]);
+
     destinationMarker.setLatLng(latLng);
-    drawDirection(lieuDepart, destination);
+
+    if (lieuDepart != null && destination != null && lieuDepart[0] !== destination[0] && lieuDepart[1] !== destination[1]) {
+        drawDirection(lieuDepart, destination);
+    }
+    else {
+        findNearestDriver(lieuDepart);
+    }
 }
 
 function drawDirection(lieuDepart, destination){

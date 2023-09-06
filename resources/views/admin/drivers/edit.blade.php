@@ -103,7 +103,7 @@
                                     </div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-success">
                                     <i class="mdi mdi-pencil-circle"></i> Modifier
                             </button>
                         </form>

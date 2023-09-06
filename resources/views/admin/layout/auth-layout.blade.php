@@ -22,7 +22,7 @@
 @yield('content')
 
 <footer class="footer footer-alt">
-    <p class="fw-bold fs-4" style="color: #727CF5"> Kalini Taxi &copy; <span id="date"></span> </p>
+    <p class="fw-bold fs-4 text-warning"> Kalini Taxi &copy; <span id="date"></span> </p>
 </footer>
 
 <!-- bundle -->

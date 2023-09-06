@@ -38,12 +38,11 @@ Route::group(['middleware' => ['admin','noHistoryBack'],'prefix'=>'admin'], func
     Route::put("/drivers/{id}/update-car",[DriverController::class,'updateCar'])->name('admin.drivers.update-car');
     Route::put("/drivers/{id}/update-state",[DriverController::class,'changeDriverState'])->name('admin.drivers.update-state');
     Route::post("/drivers/{id}/add-wallet",[DriverController::class,'storeWallet'])->name('admin.drivers.add-wallet');
-    //Route::put("/drivers/{id}/update-wallet",[DriverController::class,'updateWallet'])->name('admin.drivers.update-wallet');
 
     // courses routes
     Route::get("/courses",[CourseController::class,'index'])->name('admin.courses');
     Route::post("/courses",[CourseController::class,'store'])->name('admin.courses.store');
-    Route::put("/courses/{id}",[CourseController::class,'update'])->name('admin.courses.update');
+    Route::put("/courses/{id}/cancel",[CourseController::class,'cancelCourse'])->name('admin.courses.cancel');
     Route::delete("/courses/{id}",[CourseController::class,'destroy'])->name('admin.courses.destroy');
     Route::get("/courses/get-prix-km/{id}/{km}",[CourseController::class,'getPrixKm'])->name('admin.courses.get-prix-km');
     // get drivers
