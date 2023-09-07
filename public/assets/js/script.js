@@ -42,7 +42,6 @@ $('#type_trajet').on('change', function () {
 });
 
 function searchPlace(input_id, pt_lat, pt_lng, calculateKm = false,place_num){
-    // if
     let pacContainerInitialized = false;
     let autocomplete;
 
@@ -242,6 +241,39 @@ function findNearestDriver(lieuDepart){
             console.log("error");
         }
     });
-
 }
+
+const tel_client = document.getElementById('tel_client');
+
+tel_client.addEventListener('input', function (e) {
+    const inputValue = e.target.value;
+
+    if (inputValue === '') {
+        e.target.classList.remove('is-invalid');
+        e.target.classList.remove('is-valid');
+    } else if (/^\d+$/.test(inputValue) && inputValue.length === 8 && (inputValue.startsWith('2') || inputValue.startsWith('3') || inputValue.startsWith('4'))) {
+        e.target.classList.remove('is-invalid');
+        e.target.classList.add('is-valid');
+    } else {
+        e.target.classList.remove('is-valid');
+        e.target.classList.add('is-invalid');
+    }
+});
+
+const nom_client = document.getElementById('nom_client');
+
+nom_client.addEventListener('input', function (e) {
+    const inputValue = e.target.value;
+
+    if (inputValue === '') {
+        e.target.classList.remove('is-invalid');
+        e.target.classList.remove('is-valid');
+    } else if (/^[a-zA-Z\s]+$/.test(inputValue)) {
+        e.target.classList.remove('is-invalid');
+        e.target.classList.add('is-valid');
+    } else {
+        e.target.classList.remove('is-valid');
+        e.target.classList.add('is-invalid');
+    }
+});
 

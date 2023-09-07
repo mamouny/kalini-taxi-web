@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 
 <head>
     <meta charset="utf-8">
@@ -32,6 +32,7 @@
             z-index: 10;
         }
     </style>
+
 </head>
 
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
@@ -176,5 +177,13 @@
 <script src="{{asset('assets/js/pages/demo.datatable-init.js')}}"></script>
 <!-- end demo js-->
 @yield('scripts')
+
+<script type="text/javascript">
+    const url = "{{ route('changeLanguage') }}";
+
+    $(".changeLang").change(function(){
+        window.location.href = url + "?lang="+ $(this).val();
+    });
+</script>
 </body>
 </html>

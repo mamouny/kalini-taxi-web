@@ -48,7 +48,7 @@ class CourseController extends Controller
             'type_course_id' => 'required|integer',
             'type_trajet' => 'required|integer',
             'lieu_depart' => 'required|string',
-            'destination' => 'required|string',
+            'destination' => 'string|required_if:type_trajet,==,1|nullable',
             'driver_id' => 'required|string',
         ]);
 
@@ -74,6 +74,16 @@ class CourseController extends Controller
                         'amount' => 0,
                     ]
                 ]);
+            }
+
+            if($request->type_trajet == 2) {
+                $destination = $request->lieu_depart;
+                $destinationLatitude = $request->latitudeLieuDepart;
+                $destinationLongitude = $request->longitudeLieuDepart;
+            } else {
+                $destination = $request->destination;
+                $destinationLatitude = $request->latitudeDestination;
+                $destinationLongitude = $request->longitudeDestination;
             }
 
             $course = $this->firebase->database()->collection('courses')->add([
@@ -103,12 +113,12 @@ class CourseController extends Controller
                     ],
                     'secondPlace' => [
                         'coordinates' => [
-                            'latitude' => $request->latitudeDestination,
+                            'latitude' => $destinationLatitude,
                             'latitudeDelta' => null,
-                            'longitude' => $request->longitudeDestination,
+                            'longitude' => $destinationLongitude,
                             'longitudeDelta' => null,
                         ],
-                        'description' => $request->destination,
+                        'description' => $destination,
                         'place_id' => "",
                     ]
                 ],

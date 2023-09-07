@@ -10,6 +10,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li class="mb-0">{{$error}}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <form action="{{route('admin.courses.store')}}" method="POST">
                     @csrf
                     <div class="row">
@@ -30,9 +39,9 @@
                                    id="tel_client" name="tel_client" value="{{old('tel_client')}}"
                                    placeholder="Téléphone du client">
                             @error('tel_client')
-                            <div class="invalid-feedback">
-                                {{$errors->first('tel_client')}}
-                            </div>
+                                <div class="invalid-feedback">
+                                    {{$errors->first('tel_client')}}
+                                </div>
                             @enderror
                         </div>
                         <div class="col-md-12 mb-3">
@@ -85,7 +94,7 @@
                         <p id="driver_phone">Numéro du chauffeur : </p>
                         <p>Véhicule : </p>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="searchDriverBtn">
+                    <button type="submit" class="btn btn-primary">
                         <i class="mdi mdi-check-circle"></i> {{trans('fr.creer_course')}}
                         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         <span class="sr-only d-none"></span>

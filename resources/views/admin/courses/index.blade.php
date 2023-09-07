@@ -84,6 +84,7 @@
                                                     </button>
                                                 </form>
                                             </td>
+                                            @include('admin.courses.show-modal')
                                         </tr>
                                        @endforeach
                                     </tbody>
@@ -97,7 +98,7 @@
             <!-- create course modal -->
             @include('admin.courses.create-modal')
             <!-- show course modal -->
-            @include('admin.courses.show-modal')
+
         </div>
     </div>
 @endsection

@@ -406,4 +406,7 @@ class DriverController extends Controller
             return back()->with('error', trans('Failed to delete driver'));
         }
     }
+
+    // wallet driver transactions
+
 }

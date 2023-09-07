@@ -25,13 +25,13 @@
         <!--- Sidemenu -->
         <ul class="side-nav">
 
-            <li class="side-nav-title side-nav-item">Navigation</li>
+            <li class="side-nav-title side-nav-item">{{trans("traduction.navigation")}}</li>
 
             <li class="side-nav-item">
                 <a data-bs-toggle="collapse" href="#sidebarDashboards" aria-expanded="false" aria-controls="sidebarDashboards" class="side-nav-link">
                     <i class="uil-home-alt"></i>
                     <span class="badge bg-success float-end">4</span>
-                    <span> Dashboards </span>
+                    <span> {{trans("traduction.dashboard")}} </span>
                 </a>
                 <div class="collapse" id="sidebarDashboards">
                     <ul class="side-nav-second-level">
@@ -43,14 +43,21 @@
             <li class="side-nav-item">
                 <a href="{{route('admin.drivers')}}" class="side-nav-link text-white">
                     <i class="mdi mdi-account-multiple"></i>
-                    <span>Chauffeurs</span>
+                    <span>{{trans("traduction.drivers")}}</span>
                 </a>
             </li>
 
             <li class="side-nav-item">
                 <a href="{{route('admin.courses')}}" class="side-nav-link text-white">
                     <i class="mdi mdi-car"></i>
-                    <span>Courses</span>
+                    <span>{{trans("traduction.courses")}}</span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="{{route('clients.index')}}" class="side-nav-link text-white">
+                    <i class="mdi mdi-account-multiple"></i>
+                    <span>{{trans("traduction.clients")}}</span>
                 </a>
             </li>
         </ul>

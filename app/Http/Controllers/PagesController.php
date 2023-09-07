@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class PagesController extends Controller
 {
@@ -19,5 +20,13 @@ class PagesController extends Controller
         $clientsCount = app('firebase.firestore')->database()->collection('clients')->documents()->size();
 
         return view('admin.dashboard', compact('driversCount', 'usersCount', 'coursesCount', 'clientsCount'));
+    }
+
+    public function changeLanguage(Request $request)
+    {
+        App::setLocale($request->lang);
+        session()->put('locale', $request->lang);
+
+        return redirect()->back();
     }
 }

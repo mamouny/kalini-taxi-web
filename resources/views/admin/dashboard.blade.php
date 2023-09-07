@@ -23,7 +23,7 @@
                             </a>
                         </form>
                     </div>
-                    <h4 class="page-title">Dashboard</h4>
+                    <h4 class="page-title">{{trans('traduction.dashboard')}}</h4>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
                            <i class="mdi mdi-account-multiple widget-icon"></i>
                        </div>
                        <h5 class="fw-semibold mt-0 d-flex align-items-center gap-1">
-                            <i class="mdi mdi-car fs-3 text-warning"></i> Courses
+                            <i class="mdi mdi-car fs-3 text-warning"></i> {{trans('traduction.courses')}}
                        </h5>
                        <h3 class="mt-3 mb-3">{{$coursesCount}}</h3>
                    </div> <!-- end card-body-->
@@ -50,7 +50,7 @@
                             <i class="mdi mdi-account-multiple widget-icon"></i>
                         </div>
                         <h5 class="fw-semibold mt-0 d-flex align-items-center gap-1">
-                            <i class="mdi mdi-account-multiple fs-3 text-warning"></i> Chauffeurs
+                            <i class="mdi mdi-account-multiple fs-3 text-warning"></i>  {{trans('traduction.drivers')}}
                         </h5>
                         <h3 class="mt-3 mb-3">{{$driversCount}}</h3>
                     </div> <!-- end card-body-->
@@ -63,7 +63,7 @@
                             <i class="mdi mdi-account-multiple widget-icon"></i>
                         </div>
                         <h5 class="fw-semibold mt-0 d-flex align-items-center gap-1">
-                            <i class="mdi mdi-account-multiple fs-3 text-warning"></i> Clients
+                            <i class="mdi mdi-account-multiple fs-3 text-warning"></i> {{trans('traduction.clients')}}
                         </h5>
                         <h3 class="mt-3 mb-3">{{$clientsCount}}</h3>
                     </div> <!-- end card-body-->
