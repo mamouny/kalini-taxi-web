@@ -94,15 +94,13 @@
                         <p id="driver_phone">Numéro du chauffeur : </p>
                         <p>Véhicule : </p>
                     </div>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" id="createCourseBtn">
                         <i class="mdi mdi-check-circle"></i> {{trans('fr.creer_course')}}
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <span class="sr-only d-none"></span>
                     </button>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{trans('Annuler')}}</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{trans('Fermer')}}</button>
             </div>
         </div>
     </div>

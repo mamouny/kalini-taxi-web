@@ -108,12 +108,12 @@
                             </button>
                         </form>
                     </div>
-                    <div class="card-footer">
-                        <button class="btn btn-info">
-                        <i class="mdi mdi-form-textbox-password"></i>
-                            Réinitialisé le mot de passe
-                        </button>
-                    </div>
+{{--                    <div class="card-footer">--}}
+{{--                        <button class="btn btn-info">--}}
+{{--                        <i class="mdi mdi-form-textbox-password"></i>--}}
+{{--                            Réinitialisé le mot de passe--}}
+{{--                        </button>--}}
+{{--                    </div>--}}
                 </div>
             </div>
         </div>

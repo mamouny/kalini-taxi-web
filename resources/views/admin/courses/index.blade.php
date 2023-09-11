@@ -46,7 +46,7 @@
                                         <tr>
                                             <td>{{$course['client']['nom']}}</td>
                                             <td>{{$course['driver']['nom'] }}</td>
-                                            <td>{{$course['types_course_id'] == 1 ? "Normale" : "Ouverte"}}</td>
+                                            <td>{{$course['types_trajet_id'] == 1 ? "Normale" : "Ouverte"}}</td>
                                             <td>{{$course['date_debut']}}</td>
                                             <td>{{$course['price']}} mru</td>
                                             <td>
@@ -55,7 +55,7 @@
                                                 @elseif($course['etat_course_id'] == 2)
                                                     <span class="badge bg-info">Lancé</span>
                                                 @elseif($course['etat_course_id'] == 3)
-                                                    <span class="badge bg-warning">Chauffeur en route</span>
+                                                    <span class="badge bg-warning">En route</span>
                                                 @elseif($course['etat_course_id'] == 4)
                                                     <span class="badge bg-dark">Passager au bord</span>
                                                 @elseif($course['etat_course_id'] == 5)
@@ -72,7 +72,8 @@
                                                 <form action="{{route('admin.courses.cancel',$course['id'])}}" method="post">
                                                     @csrf
                                                     @method('PUT')
-                                                    <button type="submit" class="btn btn-warning btn-sm text-white" onclick="return confirm('Voulez-vous annuler cette course ?')">
+                                                    <button type="submit" class="btn btn-warning btn-sm text-white" onclick="return confirm('Voulez-vous annuler cette course ?')"
+                                                            @if($course['etat_course_id'] == 6)  disabled @endif>
                                                         <i class="mdi mdi-cancel"></i>
                                                     </button>
                                                 </form>

@@ -29,4 +29,5 @@ class PagesController extends Controller
 
         return redirect()->back();
     }
+
 }

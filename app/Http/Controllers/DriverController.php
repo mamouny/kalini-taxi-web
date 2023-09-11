@@ -55,14 +55,27 @@ class DriverController extends Controller
 
     public function store(Request $request)
     {
+        // request validation and custom error messages
         $request->validate([
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'tel' => 'required|digits:8',
             'etat_chauffeur_id' => 'required|integer',
             'etat_disponibilite' => 'required|integer',
-            'password' => 'required|digits:4|confirmed',
             'permis_conduire' => 'required|file|mimes:png,jpg,jpeg|max:2048',
+        ], [
+            'nom.required' => 'Le champ :attribute est requis.',
+            'prenom.required' => 'Le champ :attribute est requis.',
+            'tel.required' => 'Le champ :attribute est requis.',
+            'tel.digits' => 'Le champ :attribute doit comporter exactement 8 chiffres.',
+            'etat_chauffeur_id.required' => 'Le champ :attribute est requis.',
+            'etat_chauffeur_id.integer' => 'Le champ :attribute doit être un nombre entier.',
+            'etat_disponibilite.required' => 'Le champ :attribute est requis.',
+            'etat_disponibilite.integer' => 'Le champ :attribute doit être un nombre entier.',
+            'permis_conduire.required' => 'Le champ :attribute est requis.',
+            'permis_conduire.file' => 'Le champ :attribute doit être un fichier.',
+            'permis_conduire.mimes' => 'Le champ :attribute doit être un fichier de type : png, jpg, jpeg.',
+            'permis_conduire.max' => 'Le champ :attribute ne doit pas dépasser :max kilo-octets.',
         ]);
 
         $newDriverData = [
@@ -187,7 +200,17 @@ class DriverController extends Controller
             'tel' => 'required|digits:8',
             'etat_chauffeur_id' => 'required|integer',
             'etat_disponibilite' => 'required|integer',
+        ], [
+            'nom.required' => 'Le champ :attribute est requis.',
+            'prenom.required' => 'Le champ :attribute est requis.',
+            'tel.required' => 'Le champ :attribute est requis.',
+            'tel.digits' => 'Le champ :attribute doit comporter exactement 8 chiffres.',
+            'etat_chauffeur_id.required' => 'Le champ :attribute est requis.',
+            'etat_chauffeur_id.integer' => 'Le champ :attribute doit être un nombre entier.',
+            'etat_disponibilite.required' => 'Le champ :attribute est requis.',
+            'etat_disponibilite.integer' => 'Le champ :attribute doit être un nombre entier.',
         ]);
+
 
         $driverDocument = $this->driversCollection->document($id);
 
@@ -407,6 +430,30 @@ class DriverController extends Controller
         }
     }
 
-    // wallet driver transactions
+    // reset driver password
+    public function resetPassword(Request $request ,string $id)
+    {
+        $driverDocument = $this->driversCollection->document($id)->snapshot();
 
+        if (!$driverDocument->exists()) {
+            return redirect()->route('admin.drivers')->with('error', 'Chauffeur non trouvé !');
+        }
+
+        $driverData = $driverDocument->data();
+        $userId = $driverData['user_id'];
+
+        try {
+            $auth = app('firebase.auth');
+            $auth->updateUser($userId, [
+                'password' => $request->password . '00',
+            ]);
+
+            $driverData['password'] = $request->password . '00';
+            $this->driversCollection->document($id)->set($driverData, ['merge' => true]);
+
+            return redirect()->route('admin.drivers')->with('success', 'Mot de passe réinitialisé avec succès');
+        } catch (FirebaseException $e) {
+            return back()->with('error', 'Erreur lors de la réinitialisation du mot de passe');
+        }
+    }
 }

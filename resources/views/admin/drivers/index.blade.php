@@ -29,7 +29,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4>Chauffeurs</h4>
                         <a href="{{route('admin.drivers.create')}}" class="btn btn-warning text-white">
-                            <i class="mdi mdi-plus-circle me-1"></i> Ajouter un chauffeur
+                            <i class="mdi mdi-plus-circle me-1"></i> Chauffeur
                         </a>
                     </div>
                     <div class="card-body">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use GPBMetadata\Google\Api\Auth;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Exception\FirebaseException;
@@ -23,6 +24,10 @@ class CourseController extends Controller
      */
     public function index()
     {
+        if(!$this->check_internet_connection()){
+            return redirect()->route("admin.courses")->with('error', 'Vérifiiez votre connexion internet !');
+        }
+
         $coursesDocuments = $this->coursesCollection->documents();
 
         $courses = collect($coursesDocuments->rows())->map(function ($document) {
@@ -32,7 +37,7 @@ class CourseController extends Controller
             $data['driver'] = $driver;
 
             return $data;
-        });
+        })->sortByDesc('date_debut');
 
         return view('admin.courses.index',compact('courses'));
     }
@@ -40,9 +45,10 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nom_client' => 'required|string',
             'tel_client' => 'required|string',
             'type_course_id' => 'required|integer',
@@ -50,56 +56,76 @@ class CourseController extends Controller
             'lieu_depart' => 'required|string',
             'destination' => 'string|required_if:type_trajet,==,1|nullable',
             'driver_id' => 'required|string',
+        ], [
+            'nom_client.required' => 'Le nom du client est obligatoire.',
+            'tel_client.required' => 'Le numéro de téléphone du client est obligatoire.',
+            'type_trajet.required' => 'Le type de trajet est obligatoire.',
+            'lieu_depart.required' => 'Le lieu de départ est obligatoire.',
+            'driver_id.required' => 'Complétez les infos pour qu\'on puisse trouvez un chauffeur.',
         ]);
 
         try {
+
+            // check if internet is available or not
+            if(!$this->check_internet_connection()){
+                return redirect()->route("admin.courses")->with('error', 'Vérifiiez votre connexion internet !');
+            }
+
             $driverId = $this->firebase->database()->collection('drivers')->document($request->driver_id)->snapshot()->id();
 
             $clientQuery = $this->firebase->database()->collection('clients')->where('tel', '=', $request->tel_client);
             $clientDocument = $clientQuery->documents()->rows();
 
             if (!empty($clientDocument)) {
+                // Client exists, retrieve the data and ID
                 $client = $clientDocument[0];
+                $clientId = $client->id();
+                $clientData = $client->data();
             } else {
-                $client = null;
-            }
-
-            if (!$client) {
-                $client = $this->firebase->database()->collection('clients')->add([
-                    'nom' => $request->nom_client,
-                    'tel' => $request->tel_client,
+                // Client doesn't exist, create a new client and retrieve its ID
+                $newClientData = [
+                    'nom' => $validatedData['nom_client'],
+                    'tel' => $validatedData['tel_client'],
                     'course_id' => null,
                     'user_id' => null,
                     'wallet' => [
                         'amount' => 0,
                     ]
-                ]);
+                ];
+
+                // Add the new client to the 'clients' collection
+                $newClientDocument = $this->firebase->database()->collection('clients')->add($newClientData);
+                $clientId = $newClientDocument->id();
+
+                // Retrieve the newly created client data
+                $clientData = $newClientDocument->snapshot()->data();
             }
 
-            if($request->type_trajet == 2) {
-                $destination = $request->lieu_depart;
+            if ($validatedData['type_trajet'] == 2) {
+                $destination = $validatedData['lieu_depart'];
                 $destinationLatitude = $request->latitudeLieuDepart;
                 $destinationLongitude = $request->longitudeLieuDepart;
             } else {
-                $destination = $request->destination;
+                $destination = $validatedData['destination'];
                 $destinationLatitude = $request->latitudeDestination;
                 $destinationLongitude = $request->longitudeDestination;
             }
 
+            // Create a new course
             $course = $this->firebase->database()->collection('courses')->add([
                 'client' => [
-                    'nom' => $client->data()['nom'],
-                    'tel' => $client->data()['tel'],
+                    'nom' => $clientData['nom'],
+                    'tel' => $clientData['tel'],
                     'user_id' => "admin-".auth()->user()->id,
                     'wallet' => [
-                        'amount' => $client->data()['wallet']['amount'],
+                        'amount' => $clientData['wallet']['amount'],
                     ]
                 ],
-                'date_debut' => date('Y-m-d H:i:s'),
+                'date_debut' => Carbon::now()->format('Y-m-d H:i:s'),
                 'date_end' => null,
                 'driver' => null,
                 'driver_id' => $driverId,
-                'client_id' => $client->id(),
+                'client_id' => $clientId,
                 'emplacements' => [
                     'firstPlace' => [
                         'coordinates' => [
@@ -108,7 +134,7 @@ class CourseController extends Controller
                             'longitude' => $request->longitudeLieuDepart,
                             'longitudeDelta' => null,
                         ],
-                        'description' => $request->lieu_depart,
+                        'description' => $validatedData['lieu_depart'],
                         'place_id' => "",
                     ],
                     'secondPlace' => [
@@ -126,30 +152,26 @@ class CourseController extends Controller
                 'kilometrage' => (float)$request->km,
                 'distance' => $request->distance,
                 'etat_course_id' => 1,
-                'types_course_id' => (int)$request->type_course_id,
-                'types_trajet_id' => (int)$request->type_trajet,
+                'types_course_id' => (int)$validatedData['type_course_id'],
+                'types_trajet_id' => (int)$validatedData['type_trajet'],
                 'user_id' => "admin-".auth()->user()->id,
                 'comment' => null,
                 'timeWaiting' => $request->time_waiting,
                 'raiting' => 0,
             ]);
 
-            $driver = $this->firebase->database()->collection('drivers')->document($driverId);
-
-            $clientFromDb = $this->firebase->database()->collection('clients')->document($client->id());
-
-            $clientFromDb->update([
+            $this->firebase->database()->collection('clients')->document($clientId)->update([
                 ['path' => 'course_id', 'value' => $course->id()]
             ]);
 
-            $driver->update([
+            $this->firebase->database()->collection('drivers')->document($driverId)->update([
                 ['path' => 'course_id', 'value' => $course->id()]
             ]);
+
+            return redirect()->route("admin.courses")->with('success', 'Course created successfully.');
         } catch(FirebaseException $e){
             return redirect()->route("admin.courses")->with('error', 'Error while creating course.');
         }
-
-        return redirect()->route("admin.courses")->with('success', 'Course created successfully.');
     }
 
     public function cancelCourse(string $id)
@@ -214,6 +236,7 @@ class CourseController extends Controller
             $latitude = $data['lat'];
             $longitude = $data['lng'];
             $car = $data['car'];
+            $token = $data['tokens'][0];
 
             $location = [
                 'latitude' => $latitude,
@@ -226,9 +249,10 @@ class CourseController extends Controller
                 'prenom' => $prenom,
                 'tel' => $tel,
                 'location' => $location,
-                'car' => $car
+                'car' => $car,
+                'token' => $token
             ];
-        })->where("course_id",null)->all();
+        })->where('course_id','=', null)->all();
 
         return response()->json(["drivers" => $drivers]);
     }
@@ -250,5 +274,15 @@ class CourseController extends Controller
         $client->update([
             ['path' => 'course_id', 'value' => null]
         ]);
+    }
+
+    private function check_internet_connection()
+    {
+        $connected = @fsockopen("www.google.com", 80);
+        if ($connected){
+            fclose($connected);
+            return true;
+        }
+        return false;
     }
 }

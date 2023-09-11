@@ -44,12 +44,21 @@
                                             <td>{{$client['nom']}}</td>
                                             <td>{{$client['tel']}}</td>
                                             <td>{{$client['wallet']['amount']}} mru</td>
-                                            <td>
+                                            <td class="d-flex gap-1">
                                                 <button class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showModal-{{$client['id']}}"
                                                 >
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
+                                                <form action="{{route('clients.destroy',$client['id'])}}" method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Voulez-vous supprimer ce client ?')">
+                                                        <i class="mdi mdi-trash-can-outline"></i>
+                                                    </button>
+                                                </form>
                                             </td>
+
+                                            @include('admin.clients.delete-modal')
                                         </tr>
                                     @endforeach
                                     </tbody>

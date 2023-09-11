@@ -1,4 +1,5 @@
 let map, lieuDepart = null, destination = null, polyline=null;
+const myHeaders = new Headers();
 
 let lieuDepartMarker = L.marker([0,0],{
     draggable: false,
@@ -86,7 +87,7 @@ function searchPlace(input_id, pt_lat, pt_lng, calculateKm = false,place_num){
 function setLieuDepart(lieuDepart)
 {
     const latLng = new L.LatLng(lieuDepart[0], lieuDepart[1]);
-    lieuDepartMarker.setLatLng(latLng)
+    lieuDepartMarker.setLatLng(latLng);
 }
 
 function setDestination(destination) {
@@ -182,6 +183,7 @@ function findNearestDriver(lieuDepart){
         type: 'get',
         url: "courses/get-drivers/",
         success: function (data) {
+
             let driversCoordinates = [];
 
             for (let i = 0; i < data.drivers.length; i++) {
@@ -198,7 +200,9 @@ function findNearestDriver(lieuDepart){
             if (nearestDriver) {
                 let driver = data.drivers
                     .filter(driver => driver.car.type_course == $('#type_course_id').val())
-                    .find(driver => driver.location.latitude === nearestDriver.latitude && driver.location.longitude === nearestDriver.longitude)
+                    .find(driver => driver.location.latitude === nearestDriver.latitude &&
+                        driver.location.longitude === nearestDriver.longitude);
+
                 let time = geolib.getDistance(lieuDepartLatLng, nearestDriver);
                 let timeInMinutes = time / 60;
 
@@ -219,6 +223,7 @@ function findNearestDriver(lieuDepart){
                             <strong><i class="fas fa-user"></i> Nom complet : </strong> ${driver.nom} ${driver.prenom}
                             <input type="hidden" name="driver_id" value="${driver.id}">
                             <input type="hidden" id="time_waiting" name="time_waiting">
+                            <input type="hidden" id="driver_token" name="driver_token" value="${driver.token}">
                        </p>
                        <p>
                             <strong><i class="fas fa-phone"></i> Téléphone : </strong> ${driver.tel}
@@ -233,6 +238,7 @@ function findNearestDriver(lieuDepart){
                     </div>`).openPopup();
 
                 $('#time_waiting').val(timeInMinutes);
+
                 driverMarker.addTo(map);
                 map.setView(driverLatLng, 13);
             }
@@ -251,7 +257,8 @@ tel_client.addEventListener('input', function (e) {
     if (inputValue === '') {
         e.target.classList.remove('is-invalid');
         e.target.classList.remove('is-valid');
-    } else if (/^\d+$/.test(inputValue) && inputValue.length === 8 && (inputValue.startsWith('2') || inputValue.startsWith('3') || inputValue.startsWith('4'))) {
+    } else if (/^\d+$/.test(inputValue) && inputValue.length === 8 && (inputValue.startsWith('2') || inputValue.startsWith('3')
+        || inputValue.startsWith('4'))) {
         e.target.classList.remove('is-invalid');
         e.target.classList.add('is-valid');
     } else {
@@ -277,3 +284,32 @@ nom_client.addEventListener('input', function (e) {
     }
 });
 
+$('#createCourseBtn').on("click",function (e){
+    let driverToken = $('#driver_token').val();
+
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append(
+        "Authorization",
+        "key=AAAARgBcTsw:APA91bGNBXsTjg3TxlgjmDd22uhcj09h2mckxYpxPThJEN5TPRBAnrHvcmHCGhCQrncnCo0OL0umu2bgYQGtn054HWYB7VOLdAHA6xfTsaHpFVGEykEaOaJ5-S9gFZXh-Rv2u1Wv4StW"
+    );
+
+    const raw = JSON.stringify({
+        data: {},
+        notification: {
+            title: "Course !",
+            body: `Vous avez une course de ${$("#lieu_depart").val()} -> ${$("#destination").val()} `,
+        },
+        to : `${driverToken}`,
+    });
+
+    const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+    };
+
+    fetch('https://fcm.googleapis.com/fcm/send', requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error on notify', error));
+});
