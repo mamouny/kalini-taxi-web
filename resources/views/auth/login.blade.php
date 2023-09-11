@@ -8,10 +8,11 @@
                 <div class="card">
 
                     <!-- Logo -->
-                    <div class="card-header pt-4 pb-4 text-center bg-primary">
-                        <a href="#">
-                            <span><img src="{{asset('assets/images/logo.png')}}" alt="" height="18"></span>
-                        </a>
+                    <div class="card-header py-2 text-center bg-warning text-white">
+{{--                        <a href="#">--}}
+{{--                            <span><img src="{{asset('assets/images/logo.png')}}" alt="" height="18"></span>--}}
+{{--                        </a>--}}
+                        <h4>Kalini Taxi Administration</h4>
                     </div>
 
                     <div class="card-body p-4">
@@ -24,6 +25,13 @@
                         @if(session()->has('info'))
                             <div class="alert alert-info alert-dismissible fade show" role="alert">
                                 <strong>Info : </strong> {{session()->get('info')}}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if(session()->has('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                 {{session()->get('error')}}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
@@ -68,7 +76,7 @@
 
 
                             <div class="mb-3 mb-0 text-center">
-                                <button class="btn btn-primary w-50" type="submit"> Connexion <i class="mdi mdi-login"></i> </button>
+                                <button class="btn btn-warning text-white w-50" type="submit"> Connexion <i class="mdi mdi-login"></i> </button>
                             </div>
 
                         </form>

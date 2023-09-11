@@ -11,33 +11,24 @@
             </div>
         </li>
         <li class="dropdown notification-list topbar-dropdown">
-            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                <img src="{{asset('assets/images/flags/us.jpg')}}" alt="user-image" class="me-0 me-sm-1" height="12">
-                <span class="align-middle d-none d-sm-inline-block">English</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <img src="{{asset('assets/images/flags/germany.jpg')}}" alt="user-image" class="me-1" height="12"> <span class="align-middle">German</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <img src="{{asset('assets/images/flags/italy.jpg')}}" alt="user-image" class="me-1" height="12"> <span class="align-middle">Italian</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <img src="{{asset('assets/images/flags/spain.jpg')}}" alt="user-image" class="me-1" height="12"> <span class="align-middle">Spanish</span>
-                </a>
-
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <img src="{{asset('assets/images/flags/russia.jpg')}}" alt="user-image" class="me-1" height="12"> <span class="align-middle">Russian</span>
-                </a>
-
-            </div>
+{{--            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">--}}
+{{--                <img src="{{asset('assets/images/flags/us.jpg')}}" alt="user-image" class="me-0 me-sm-1" height="12">--}}
+{{--                <span class="align-middle d-none d-sm-inline-block">Français</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>--}}
+{{--            </a>--}}
+{{--            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">--}}
+{{--                <!-- item-->--}}
+{{--                <a href="javascript:void(0);" class="dropdown-item notify-item" data-value="ar">--}}
+{{--                    <img src="{{asset('assets/images/flags/germany.jpg')}}" alt="user-image" class="me-1" height="12">--}}
+{{--                    <span class="align-middle">--}}
+{{--                        Arabe--}}
+{{--                    </span>--}}
+{{--                </a>--}}
+{{--            </div>--}}
+                <label for="language" class="d-none"> </label>
+                <select class="form-control changeLang mt-3" id="language">
+                    <option value="fr" {{ session()->get('locale') == 'fr' ? 'selected' : '' }}>{{trans('traduction.fr')}}</option>
+                    <option value="ar" {{ session()->get('locale') == 'ar' ? 'selected' : '' }}> {{trans('traduction.ar')}}</option>
+                </select>
         </li>
 
         <li class="dropdown notification-list">
@@ -61,7 +52,7 @@
                 <div style="max-height: 230px;" data-simplebar="">
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <div class="notify-icon bg-primary">
+                        <div class="notify-icon bg-warning">
                             <i class="mdi mdi-comment-account-outline"></i>
                         </div>
                         <p class="notify-details">Caleb Flakelar commented on Admin
@@ -91,7 +82,7 @@
 
                     <!-- item-->
                     <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <div class="notify-icon bg-primary">
+                        <div class="notify-icon bg-warning">
                             <i class="mdi mdi-comment-account-outline"></i>
                         </div>
                         <p class="notify-details">Caleb Flakelar commented on Admin
@@ -122,7 +113,7 @@
                 </div>
 
                 <!-- All-->
-                <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
+                <a href="javascript:void(0);" class="dropdown-item text-center text-warning notify-item notify-all">
                     View All
                 </a>
 
@@ -201,32 +192,32 @@
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
                 <!-- item-->
                 <div class=" dropdown-header noti-title">
-                    <h6 class="text-overflow m-0">Welcome !</h6>
+                    <h6 class="text-overflow m-0"> {{trans("traduction.welcome")}}</h6>
                 </div>
 
                 <!-- item-->
                 <a href="javascript:void(0);" class="dropdown-item notify-item">
                     <i class="mdi mdi-account-circle me-1"></i>
-                    <span>My Account</span>
+                    <span>{{trans("traduction.my-account")}}</span>
                 </a>
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-account-edit me-1"></i>
-                    <span>Settings</span>
-                </a>
+{{--                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                    <i class="mdi mdi-account-edit me-1"></i>--}}
+{{--                    <span>Settings</span>--}}
+{{--                </a>--}}
 
                 <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-lifebuoy me-1"></i>
-                    <span>Support</span>
-                </a>
+{{--                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                    <i class="mdi mdi-lifebuoy me-1"></i>--}}
+{{--                    <span>Support</span>--}}
+{{--                </a>--}}
 
-                <!-- item-->
-                <a href="javascript:void(0);" class="dropdown-item notify-item">
-                    <i class="mdi mdi-lock-outline me-1"></i>
-                    <span>Lock Screen</span>
-                </a>
+{{--                <!-- item-->--}}
+{{--                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
+{{--                    <i class="mdi mdi-lock-outline me-1"></i>--}}
+{{--                    <span>Lock Screen</span>--}}
+{{--                </a>--}}
 
                 <!-- item-->
                 <a href="{{ route('logout') }}" class="dropdown-item notify-item"
@@ -234,7 +225,7 @@
                                                      document.getElementById('logout-form').submit();"
                 >
                     <i class="mdi mdi-logout me-1"></i>
-                    <span>Déconnexion</span>
+                    <span>{{trans("traduction.logout")}}</span>
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                     @csrf
@@ -251,7 +242,7 @@
             <div class="input-group">
                 <input type="text" class="form-control dropdown-toggle" placeholder="Search..." id="top-search">
                 <span class="mdi mdi-magnify search-icon"></span>
-                <button class="input-group-text btn-primary" type="submit">Search</button>
+                <button class="input-group-text btn-warning" type="submit">Search</button>
             </div>
         </form>
 

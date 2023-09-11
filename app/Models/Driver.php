@@ -10,6 +10,7 @@ class Driver extends Model
         'nom',
         'prenom',
         'tel',
+        'photo',
         'lat',
         'lng',
         'etat_chauffeur_id',
@@ -19,8 +20,4 @@ class Driver extends Model
         'car_id'
     ];
 
-    public function car(): \Illuminate\Database\Eloquent\Relations\HasOne
-    {
-        return $this->hasOne('App\Models\Voiture');
-    }
 }

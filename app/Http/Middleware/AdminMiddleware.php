@@ -18,7 +18,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->user_type !== 'admin'){
+        if(Auth::check() && Auth::user()->user_type !== 'admin'){
             Auth::logout();
             return redirect()->route('login')->with('info','Accès refusé !');
         }
