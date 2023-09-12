@@ -1,5 +1,5 @@
 @extends('admin.layout.admin-layout')
-@section('title','Kalini | Chauffeurs')
+@section('title',trans("traduction.drivers"))
 @section('content')
     @php
         use App\Http\Enums\DriverStateEnum;
@@ -12,12 +12,12 @@
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Kalini</a></li>
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Taxi</a></li>
-                            <li class="breadcrumb-item active">Chauffeurs</li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{trans("traduction.app_name")}}</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{trans("traduction.app_name")}}</a></li>
+                            <li class="breadcrumb-item active">{{trans("traduction.drivers")}}</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Chauffeurs</h4>
+                    <h4 class="page-title">{{trans("traduction.drivers")}}</h4>
                 </div>
             </div>
         </div>
@@ -27,9 +27,9 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4>Chauffeurs</h4>
+                        <h4>{{trans("traduction.drivers")}}</h4>
                         <a href="{{route('admin.drivers.create')}}" class="btn btn-warning text-white">
-                            <i class="mdi mdi-plus-circle me-1"></i> Chauffeur
+                            <i class="mdi mdi-plus-circle me-1"></i> {{trans("traduction.add_driver")}}
                         </a>
                     </div>
                     <div class="card-body">
@@ -39,12 +39,12 @@
                                 <table id="basic-datatable" class="table dt-responsive nowrap w-100">
                                     <thead>
                                     <tr>
-                                        <th>Nom</th>
-                                        <th>Prénom</th>
-                                        <th>Téléphone</th>
-                                        <th>Etat</th>
-                                        <th>Disponibilité</th>
-                                        <th>Actions</th>
+                                        <th>{{trans("traduction.nom_chauffeur")}}</th>
+                                        <th>{{trans("traduction.prenom_chauffeur")}}</th>
+                                        <th>{{trans("traduction.tel_chauffeur")}}</th>
+                                        <th>{{trans("traduction.etat_chauffeur")}}</th>
+                                        <th>{{trans("traduction.etat_disponibilite")}}</th>
+                                        <th>{{trans("traduction.actions")}}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -71,10 +71,10 @@
                                                 </td>
                                                 <td>
                                                     <a href="{{route('admin.drivers.edit', $driver['id'])}}" class="btn btn-primary btn-sm"><i class="mdi mdi-pencil"></i></a>
-                                                    <button class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showModal-{{$driver['id']}}"
-                                                    >
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </button>
+{{--                                                    <button class="btn btn-info btn-sm text-white" data-bs-toggle="modal" data-bs-target="#showModalDriver-{{$driver['id']}}"--}}
+{{--                                                    >--}}
+{{--                                                        <i class="mdi mdi-eye"></i>--}}
+{{--                                                    </button>--}}
                                                     @php
                                                         $driverPermisPhoto = \App\Models\DriverDocument::query()->where('driver_id_firebase', $driver['user_id'])->first()->driver_permis_photo;
                                                     @endphp

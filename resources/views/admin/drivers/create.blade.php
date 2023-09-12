@@ -1,5 +1,5 @@
 @extends('admin.layout.admin-layout')
-@section('title','Kalini | Ajouter un chauffeur')
+@section('title',trans('traduction.add_driver'))
 @section('content')
     <div class="container-fluid">
         <!-- start page title -->
@@ -8,12 +8,12 @@
                 <div class="page-title-box">
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Kalini</a></li>
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Taxi</a></li>
-                            <li class="breadcrumb-item active">Ajouter un chauffeur</li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{trans('traduction.app_name')}}</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{trans('traduction.app_name')}}</a></li>
+                            <li class="breadcrumb-item active">{{trans('traduction.add_driver')}}</li>
                         </ol>
                     </div>
-                    <h4 class="page-title">Ajouter un chauffeur</h4>
+                    <h4 class="page-title">{{trans('traduction.add_driver')}}</h4>
                 </div>
             </div>
         </div>
@@ -22,10 +22,10 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4>Ajouter un chauffeur</h4>
+                        <h4>{{trans('traduction.add_driver')}}</h4>
                         <a href="{{route('admin.drivers')}}">
                             <button type="button" class="btn btn-success waves-effect waves-light">
-                                <i class="mdi mdi-arrow-left"></i> Retour
+                                <i class="mdi mdi-arrow-left"></i> {{trans('traduction.back')}}
                             </button>
                         </a>
                     </div>
@@ -42,24 +42,24 @@
                         <form action="{{route('admin.drivers.store')}}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
-                                <label for="nom" class="mb-1">Nom</label>
-                                <input type="text" class="form-control" id="nom" name="nom" value="{{old('nom')}}" placeholder="Nom">
+                                <label for="nom" class="mb-1">{{trans('traduction.nom_chauffeur')}}</label>
+                                <input type="text" class="form-control" id="nom" name="nom" value="{{old('nom')}}" placeholder="{{trans('traduction.nom_chauffeur')}}">
                             </div>
                             <div class="mb-3">
-                                <label for="prenom" class="mb-1">Prénom</label>
-                                <input type="text" class="form-control" id="prenom" name="prenom" value="{{old('prenom')}}" placeholder="Prénom">
+                                <label for="prenom" class="mb-1">{{trans('traduction.prenom_chauffeur')}}</label>
+                                <input type="text" class="form-control" id="prenom" name="prenom" value="{{old('prenom')}}" placeholder="{{trans('traduction.prenom_chauffeur')}}">
                             </div>
                             <div class="mb-3">
-                                <label for="tel" class="mb-1">Téléphone</label>
-                                <input type="text" class="form-control" id="tel" name="tel" value="{{old('tel')}}" placeholder="Téléphone">
+                                <label for="tel" class="mb-1">{{trans('traduction.tel_chauffeur')}}</label>
+                                <input type="text" class="form-control" id="tel" name="tel" value="{{old('tel')}}" placeholder="{{trans('traduction.tel_chauffeur')}}">
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="mb-1">Mot de passe</label>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Mot de passe">
+                                <label for="password" class="mb-1">{{trans('traduction.password')}}</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="{{trans('traduction.password')}}">
                             </div>
                             <div class="mb-3">
-                                <label for="password_confirmation" class="mb-1">Confirmation du mot de passe</label>
-                                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation" placeholder="Confirmez le mot de passe">
+                                <label for="password_confirmation" class="mb-1">{{trans('traduction.confirm_password')}}</label>
+                                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation" placeholder="{{trans('traduction.confirm_password')}}">
                                 @error('password_confirmation')
                                 <div class="invalid-feedback">
                                     {{$errors->first('password_confirmation')}}
@@ -67,25 +67,25 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="etat_chauffeur_id" class="form-label">Etat du chauffeur</label>
+                                <label for="etat_chauffeur_id" class="form-label">{{trans('traduction.etat_chauffeur')}}</label>
                                 <select class="form-select" id="etat_chauffeur_id" name="etat_chauffeur_id">
-                                    <option value="1" selected>initié</option>
-                                    <option value="2">Validé</option>
+                                    <option value="1" selected>{{trans('traduction.etat_chauffeur_init')}}</option>
+                                    <option value="2">{{trans('traduction.etat_chauffeur_valide')}}</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="etat_disponibilite" class="form-label">Etat de disponibilité</label>
+                                <label for="etat_disponibilite" class="form-label">{{trans('traduction.etat_disponibilite')}}</label>
                                 <select class="form-select" id="etat_disponibilite" name="etat_disponibilite">
-                                    <option value="1">Oui</option>
-                                    <option value="0" selected>Non</option>
+                                    <option value="1">{{trans('traduction.oui')}}</option>
+                                    <option value="0" selected>{{trans('traduction.non')}}</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="permis_conduire" class="mb-1">Permis de conduire</label>
+                                <label for="permis_conduire" class="mb-1">{{trans('traduction.permis')}}</label>
                                 <input type="file" class="form-control" id="permis_conduire" name="permis_conduire">
                             </div>
                             <button type="submit" class="btn btn-success" id="btnCreateDriver">
-                                <i class="mdi mdi-plus-circle"></i> Ajouter
+                                <i class="mdi mdi-plus-circle"></i> {{trans('traduction.add')}}
                             </button>
                         </form>
                     </div>

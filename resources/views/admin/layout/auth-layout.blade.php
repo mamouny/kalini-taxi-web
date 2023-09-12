@@ -14,7 +14,14 @@
     <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" id="light-style" />
     <link href="{{asset('assets/css/app-dark.min.css')}}" rel="stylesheet" type="text/css" id="dark-style" />
-
+    @if(app()->getLocale() == 'ar')
+        <style>
+            body {
+                direction: rtl;
+                text-align: right;
+            }
+        </style>
+    @endif
 </head>
 
 <body class="loading authentication-bg" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
@@ -22,7 +29,7 @@
 @yield('content')
 
 <footer class="footer footer-alt">
-    <p class="fw-bold fs-4 text-warning"> Kalini Taxi &copy; <span id="date"></span> </p>
+    <p class="fw-bold fs-4 text-warning"> {{trans("traduction.app_name")}} &copy; <span id="date"></span> </p>
 </footer>
 
 <!-- bundle -->
@@ -43,7 +50,6 @@
             };
         }
     };
-
 </script>
 </body>
 </html>

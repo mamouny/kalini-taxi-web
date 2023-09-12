@@ -32,7 +32,6 @@
             z-index: 10;
         }
     </style>
-
 </head>
 
 <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false, "showRightSidebarOnStart": true}'>
@@ -44,9 +43,9 @@
     <div class="wrapper">
         <div class="content-page">
             <div class="content">
-                <!-- Topbar Start -->
+                <!-- Top bar Start -->
                @include('admin.partials.navbar')
-                <!-- end Topbar -->
+                <!-- end Top bar -->
                 @yield('content')
                 <!-- Footer Start -->
                @include('admin.partials.footer')
