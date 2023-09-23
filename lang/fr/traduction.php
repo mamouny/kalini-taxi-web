@@ -48,4 +48,13 @@ return [
     'vehicles' => 'Véhicules',
     'parameters' => 'Paramètres',
     'my-account' => 'Mon compte',
+    'login_admin_title' => 'Connexion au tableau de bord',
+    'enter_ids' => 'Entrez vos identifiants',
+    'enter_email' => 'Entrez votre adresse email',
+    'enter_password' => 'Entrez votre mot de passe',
+    'submit_login' => 'Se connecter',
+    'app_name' => 'Kalini Taxi',
+    'add_driver' => 'Ajouter un chauffeur',
+
+
 ];

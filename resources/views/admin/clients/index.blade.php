@@ -1,5 +1,5 @@
 @extends('admin.layout.admin-layout')
-@section('title','Kalini | Clients')
+@section('title',trans('admin.clients'))
 @section('content')
     <div class="container-fluid">
         <!-- start page title -->

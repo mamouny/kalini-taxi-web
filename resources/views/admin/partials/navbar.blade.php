@@ -11,23 +11,10 @@
             </div>
         </li>
         <li class="dropdown notification-list topbar-dropdown">
-{{--            <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">--}}
-{{--                <img src="{{asset('assets/images/flags/us.jpg')}}" alt="user-image" class="me-0 me-sm-1" height="12">--}}
-{{--                <span class="align-middle d-none d-sm-inline-block">Français</span> <i class="mdi mdi-chevron-down d-none d-sm-inline-block align-middle"></i>--}}
-{{--            </a>--}}
-{{--            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu">--}}
-{{--                <!-- item-->--}}
-{{--                <a href="javascript:void(0);" class="dropdown-item notify-item" data-value="ar">--}}
-{{--                    <img src="{{asset('assets/images/flags/germany.jpg')}}" alt="user-image" class="me-1" height="12">--}}
-{{--                    <span class="align-middle">--}}
-{{--                        Arabe--}}
-{{--                    </span>--}}
-{{--                </a>--}}
-{{--            </div>--}}
                 <label for="language" class="d-none"> </label>
                 <select class="form-control changeLang mt-3" id="language">
-                    <option value="fr" {{ session()->get('locale') == 'fr' ? 'selected' : '' }}>{{trans('traduction.fr')}}</option>
                     <option value="ar" {{ session()->get('locale') == 'ar' ? 'selected' : '' }}> {{trans('traduction.ar')}}</option>
+                    <option value="fr" {{ session()->get('locale') == 'fr' ? 'selected' : '' }}>{{trans('traduction.fr')}}</option>
                 </select>
         </li>
 
@@ -200,24 +187,6 @@
                     <i class="mdi mdi-account-circle me-1"></i>
                     <span>{{trans("traduction.my-account")}}</span>
                 </a>
-
-                <!-- item-->
-{{--                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                    <i class="mdi mdi-account-edit me-1"></i>--}}
-{{--                    <span>Settings</span>--}}
-{{--                </a>--}}
-
-                <!-- item-->
-{{--                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                    <i class="mdi mdi-lifebuoy me-1"></i>--}}
-{{--                    <span>Support</span>--}}
-{{--                </a>--}}
-
-{{--                <!-- item-->--}}
-{{--                <a href="javascript:void(0);" class="dropdown-item notify-item">--}}
-{{--                    <i class="mdi mdi-lock-outline me-1"></i>--}}
-{{--                    <span>Lock Screen</span>--}}
-{{--                </a>--}}
 
                 <!-- item-->
                 <a href="{{ route('logout') }}" class="dropdown-item notify-item"

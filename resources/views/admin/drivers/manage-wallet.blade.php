@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="walletModalLabel">
-                    Valider transaction du chauffeur {{$driver['nom'].' ' .$driver['prenom']}}
+                    {{trans('traduction.wallet_driver')}} {{$driver['nom'].' ' .$driver['prenom']}}
                 </h5>
                 <button type="button" class="close border-0" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -13,19 +13,18 @@
                 <form action="{{route('admin.drivers.add-wallet', $driver['id'])}}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label for="amount" class="col-form-label">Montant</label>
+                        <label for="amount" class="col-form-label">{{trans('traduction.amount')}}</label>
                         <input type="number" class="form-control" id="amount" name="amount" placeholder="Montant" min="0"
                                value="@if ($driver['wallet']['amount'] != 0){{$driver['wallet']['amount']}}@endif"
                         >
                     </div>
                     <button class="btn btn-primary" type="submit">
-                        <i class="mdi mdi-check-circle me-1"></i> Valider
+                        <i class="mdi mdi-check-circle me-1"></i> {{trans('traduction.add')}}
                     </button>
                 </form>
-
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{trans('traduction.cancel')}}</button>
             </div>
         </div>
     </div>
